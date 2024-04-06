@@ -1,5 +1,7 @@
 package com.syu.capsbe.global.config;
 
+import com.syu.capsbe.global.jwt.JwtAuthenticationFilter;
+import com.syu.capsbe.global.jwt.JwtProvider;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -18,6 +21,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableMethodSecurity
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class WebSecurityConfig {
+
+    private final JwtProvider jwtTokenProvider;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -51,8 +56,12 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v1/auth/sign-up").permitAll() // 회원가입
                         .requestMatchers("/api/v1/auth/sign-in").permitAll() // 로그인
-                        .anyRequest().permitAll())
+                        .requestMatchers("/", "/swagger-ui/**", "/api-docs/**").permitAll() // swagger-ui
+                        .anyRequest().authenticated())
 
+                // JWT 권한 필터 적용
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+                        UsernamePasswordAuthenticationFilter.class)
         ;
         return http.build();
     }
