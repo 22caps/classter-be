@@ -17,5 +17,4 @@ public class MemberEmailInvalidException extends RuntimeException {
     public static MemberEmailInvalidException of(MemberErrorCode errorCode) {
         return new MemberEmailInvalidException(errorCode);
     }
-
 }
