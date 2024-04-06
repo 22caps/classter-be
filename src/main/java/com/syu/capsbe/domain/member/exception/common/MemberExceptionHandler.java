@@ -1,6 +1,7 @@
 package com.syu.capsbe.domain.member.exception.common;
 
 import com.syu.capsbe.domain.member.exception.MemberEmailInvalidException;
+import com.syu.capsbe.domain.member.exception.MemberExistsException;
 import com.syu.capsbe.global.response.message.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
@@ -17,6 +18,13 @@ public class MemberExceptionHandler {
 
     @ExceptionHandler(MemberEmailInvalidException.class)
     public ResponseEntity<ErrorResponse> catchNonExistentEmail(MemberEmailInvalidException e) {
+        log.warn(e.getErrorCode());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of(e.getErrorCode(), e.getErrorMessage()));
+    }
+
+    @ExceptionHandler(MemberExistsException.class)
+    public ResponseEntity<ErrorResponse> catchMemberExists(MemberExistsException e) {
         log.warn(e.getErrorCode());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.of(e.getErrorCode(), e.getErrorMessage()));
