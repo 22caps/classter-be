@@ -34,8 +34,8 @@ public class JwtProvider {
         this.userDetailsService = userDetailsService;
     }
 
-    public String generateToken(String userId, List<String> roles) {
-        Claims claims = Jwts.claims().setSubject(userId);
+    public String generateToken(String email, List<String> roles) {
+        Claims claims = Jwts.claims().setSubject(email);
         claims.put("roles", roles);
 
         Date now = new Date();
