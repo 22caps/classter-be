@@ -17,6 +17,7 @@ public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender javaMailSender;
 
+    @Override
     public void sendEmail(String toEmail, String title, String text) {
         // 이메일 전송 로직
         SimpleMailMessage emailForm = createEmailForm(toEmail, title, text);
