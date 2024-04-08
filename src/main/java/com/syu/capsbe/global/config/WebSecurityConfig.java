@@ -57,7 +57,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/v1/auth/sign-up").permitAll() // 회원가입
                         .requestMatchers("/api/v1/auth/sign-in").permitAll() // 로그인
                         .requestMatchers("/", "/swagger-ui/**", "/api-docs/**").permitAll() // swagger-ui
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
 
                 // JWT 권한 필터 적용
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
