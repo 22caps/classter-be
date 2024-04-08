@@ -59,4 +59,8 @@ jobs:
           port: ${{ secrets.EC2_PORT }}
           envs: GITHUB_SHA
           script: |
-            whoami
+            docker stop caps-api
+            docker rm caps-api
+            sudo docker pull ${{ secrets.DOCKER_ID }}/${{ secrets.DOCKER_REPO }}
+            docker run -d --name caps-api -p 8080:8080 ${{ secrets.DOCKER_ID }}/${{ secrets.DOCKER_REPO }}
+            docker rmi $(docker images -a | grep "<none>" | awk '{print $3}')
