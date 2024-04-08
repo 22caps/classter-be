@@ -56,7 +56,6 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          port: ${{ secrets.EC2_PORT }}
           envs: GITHUB_SHA
           script: |
             docker stop caps-api
