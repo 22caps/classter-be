@@ -6,8 +6,8 @@ services: # 컨테이너 설정
     image: mysql/mysql-server:latest # 컨테이너에서 사용하는 base image 지정
     environment: # 컨테이너 안의 환경변수 설정
       MYSQL_DATABASE: caps
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root1234
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin1234
       MYSQL_ROOT_HOST: '%'
       MYSQL_ROOT_PASSWORD: rootpwd
     command: # 명령어 설정
