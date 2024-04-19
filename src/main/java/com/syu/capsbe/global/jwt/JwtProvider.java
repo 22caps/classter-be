@@ -1,5 +1,6 @@
 package com.syu.capsbe.global.jwt;
 
+import com.syu.capsbe.global.jwt.dto.JwtResponseDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -24,7 +25,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtProvider {
 
-    private static final long TOKEN_VALID_TIME = 30 * 60 * 60 * 24 * 1000L; // 30일
+    private static final long TOKEN_VALID_TIME = 30 * 60 * 1000L; // 30 minutes
     private final Key secretKey;
     private final UserDetailsService userDetailsService;
 
@@ -34,18 +35,21 @@ public class JwtProvider {
         this.userDetailsService = userDetailsService;
     }
 
-    public String generateToken(String email, List<String> roles) {
+    public JwtResponseDto generateToken(String email, List<String> roles) {
         Claims claims = Jwts.claims().setSubject(email);
         claims.put("roles", roles);
 
         Date now = new Date();
+        Date expiresAt = new Date(now.getTime() + TOKEN_VALID_TIME);
 
-        return Jwts.builder()
+        String accessToken = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + TOKEN_VALID_TIME))
+                .setExpiration(expiresAt)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
+
+        return JwtResponseDto.of(accessToken, expiresAt);
     }
 
     public Authentication getAuthentication(String accessToken) {
