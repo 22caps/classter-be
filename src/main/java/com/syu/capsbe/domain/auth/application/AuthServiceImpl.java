@@ -7,6 +7,7 @@ import com.syu.capsbe.domain.auth.dto.response.SignUpResponseDto;
 import com.syu.capsbe.domain.member.Member;
 import com.syu.capsbe.domain.member.application.MemberService;
 import com.syu.capsbe.global.jwt.JwtProvider;
+import com.syu.capsbe.global.jwt.dto.JwtResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,8 +43,9 @@ public class AuthServiceImpl implements AuthService {
     public SignInResponseDto signIn(SignInRequestDto signInRequestDto) {
         Member member = memberService.findByUuid(signInRequestDto.getUuid());
 
-        String accessToken = jwtProvider.generateToken(member.getUsername(), member.getRoles());
+        JwtResponseDto jwtResponseDto = jwtProvider.generateToken(member.getUsername(),
+                member.getRoles());
 
-        return SignInResponseDto.of(accessToken);
+        return SignInResponseDto.of(jwtResponseDto.getAccessToken(), jwtResponseDto.getExpiresAt());
     }
 }
