@@ -1,7 +1,9 @@
 package com.syu.capsbe.domain.problem.presentation;
 
 import com.syu.capsbe.domain.problem.application.ProblemService;
+import com.syu.capsbe.domain.problem.dto.request.ProblemHintRequestDto;
 import com.syu.capsbe.domain.problem.dto.request.ProblemRequestDto;
+import com.syu.capsbe.domain.problem.dto.response.ProblemHintResponseDto;
 import com.syu.capsbe.domain.problem.dto.response.ProblemResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,5 +28,12 @@ public class ProblemController {
     @ApiResponse(responseCode = "200", description = "문제 조회 성공")
     public List<ProblemResponseDto> getProblems(@RequestBody ProblemRequestDto problemRequestDto) {
         return problemService.getProblemsByProblemType(problemRequestDto);
+    }
+
+    @GetMapping("/hint")
+    @Operation(summary = "힌트 조회", description = "문제에 대한 힌트를 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "힌트 조회 성공")
+    public ProblemHintResponseDto getHint(@RequestBody ProblemHintRequestDto problemHintRequestDto) {
+        return problemService.getHintByQuestion(problemHintRequestDto);
     }
 }
