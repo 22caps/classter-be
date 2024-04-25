@@ -2,8 +2,12 @@ package com.syu.capsbe.domain.problem.application;
 
 import com.syu.capsbe.domain.problem.ProblemRepository;
 import com.syu.capsbe.domain.problem.ProblemType;
+import com.syu.capsbe.domain.problem.dto.request.ProblemHintRequestDto;
 import com.syu.capsbe.domain.problem.dto.request.ProblemRequestDto;
+import com.syu.capsbe.domain.problem.dto.response.ProblemHintResponseDto;
 import com.syu.capsbe.domain.problem.dto.response.ProblemResponseDto;
+import com.syu.capsbe.domain.prompt.application.PromptService;
+import com.syu.capsbe.domain.prompt.dto.response.PromptResponseDto;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProblemServiceImpl implements ProblemService {
 
     private final ProblemRepository problemRepository;
+    private final PromptService promptService;
 
     @Override
     public List<ProblemResponseDto> getProblemsByProblemType(ProblemRequestDto problemRequestDto) {
@@ -28,5 +33,13 @@ public class ProblemServiceImpl implements ProblemService {
                 .stream()
                 .map(ProblemResponseDto::of)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public ProblemHintResponseDto getHintByQuestion(ProblemHintRequestDto problemHintRequestDto) {
+        PromptResponseDto promptResponse = promptService.getPromptResponse(
+                problemHintRequestDto.getQuestion());
+
+        return ProblemHintResponseDto.of(promptResponse.getContent());
     }
 }
