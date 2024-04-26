@@ -41,11 +41,15 @@ public class Member extends BaseEntity implements UserDetails {
     @ElementCollection(fetch = FetchType.LAZY)
     private List<String> roles;
 
+    @Column(nullable = false)
+    private Long solveCount;
+
     @Builder
     public Member(String email) {
         this.email = new EmailVo(email);
         this.uuid = UUID.randomUUID().toString();
         this.roles = List.of("ROLE_USER");
+        this.solveCount = 0L;
     }
 
     @Override
@@ -83,5 +87,9 @@ public class Member extends BaseEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void updateSolveCount() {
+        this.solveCount++;
     }
 }
