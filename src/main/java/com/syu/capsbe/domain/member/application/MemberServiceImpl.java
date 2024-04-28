@@ -30,6 +30,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public Member findByMemberId(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> MemberExistsException.of(MemberErrorCode.MEMBER_IS_NOT_EXIST));
+    }
+
+    @Override
     public Member findByUuid(String uuid) {
         return memberRepository.findByUuid(uuid)
                 .orElseThrow(() -> MemberExistsException.of(MemberErrorCode.MEMBER_IS_NOT_EXIST));
