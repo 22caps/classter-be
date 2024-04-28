@@ -1,16 +1,13 @@
 package com.syu.capsbe.domain.solveHistory.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.ArrayList;
 import java.util.List;
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@Builder
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 @Schema(description = "문제 풀이 전체 기록 응답 정보")
 public class SolveHistoryResponseDto {
 
@@ -18,12 +15,11 @@ public class SolveHistoryResponseDto {
     private Long solveHistoryCount;
 
     @Schema(description = "풀이 세부 기록", example = "3")
-    private List<SolveHistoryDetailResponse> solveHistoryDetail = new ArrayList<>();
+    private List<SolveHistoryDetailResponse> solveHistoryDetail;
 
-    public static SolveHistoryResponseDto of(Long solveHistoryCount, List<SolveHistoryDetailResponse> solveHistoryDetail) {
-        return SolveHistoryResponseDto.builder()
-                .solveHistoryCount(solveHistoryCount)
-                .solveHistoryDetail(solveHistoryDetail)
-                .build();
+    @Builder
+    public static SolveHistoryResponseDto of(Long solveHistoryCount,
+            List<SolveHistoryDetailResponse> solveHistoryDetail) {
+        return new SolveHistoryResponseDto(solveHistoryCount, solveHistoryDetail);
     }
 }
