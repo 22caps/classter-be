@@ -89,7 +89,8 @@ public class Member extends BaseEntity implements UserDetails {
         return true;
     }
 
-    public void updateSolveCount() {
+    public Long updateSolveCount() {
         this.solveCount++;
+        return this.solveCount;
     }
 }
