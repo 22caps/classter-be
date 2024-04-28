@@ -11,5 +11,5 @@ public interface SolveHistoryService {
 
     List<SolveHistoryResponseDto> getHistoryList(Long memberId);
 
-    List<SolveHistoryDetailResponse> getHistoryDetail(Long memberId, Long solveHistoryId);
+    List<SolveHistoryDetailResponse> getHistoryDetails(Long memberId, Long solveCount);
 }
