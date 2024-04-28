@@ -8,6 +8,8 @@ public interface MemberService {
 
     void checkMemberIsExist(String email);
 
+    Member findByMemberId(Long memberId);
+
     Member findByUuid(String uuid);
 
     Member findByEmail(String email);
