@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Schema(description = "문제 풀이 세부 기록 응답 정보")
 public class SolveHistoryDetailResponse {
@@ -24,12 +23,11 @@ public class SolveHistoryDetailResponse {
     @Schema(description = "정답 여부", example = "true")
     private boolean isCorrect;
 
-    public static SolveHistoryDetailResponse of(String question, String answer, String userAnswer, boolean isCorrect) {
-        return SolveHistoryDetailResponse.builder()
-                .question(question)
-                .answer(answer)
-                .userAnswer(userAnswer)
-                .isCorrect(isCorrect)
-                .build();
+    @Builder
+    public SolveHistoryDetailResponse(String question, String answer, String userAnswer, boolean isCorrect) {
+        this.question = question;
+        this.answer = answer;
+        this.userAnswer = userAnswer;
+        this.isCorrect = isCorrect;
     }
 }
