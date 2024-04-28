@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -35,23 +36,18 @@ public class SolveHistory {
     private Long solveCount;
 
     @OneToMany(mappedBy = "solveHistory")
-    private List<SolveHistoryDetail> solveHistoryDetail = new ArrayList<>();
+    private List<SolveHistoryDetail> solveHistoryDetails = new ArrayList<>();
 
     private ProblemType problemType;
 
     private LocalDateTime solveDate;
 
+    @Builder
     public SolveHistory(Member member, Long solveCount, ProblemType problemType,
-            LocalDateTime solveDate, List<SolveHistoryDetail> solveHistoryDetail) {
+            LocalDateTime solveDate) {
         this.member = member;
         this.solveCount = solveCount;
         this.problemType = problemType;
         this.solveDate = solveDate;
-        this.solveHistoryDetail = solveHistoryDetail;
-    }
-
-    public void addSolveHistoryDetail(SolveHistoryDetail solveHistoryDetail) {
-        this.solveHistoryDetail.add(solveHistoryDetail);
-        solveHistoryDetail.setSolveHistory(this);
     }
 }
