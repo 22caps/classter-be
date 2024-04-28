@@ -41,11 +41,11 @@ public class SolveHistoryController {
         return solveHistoryService.getHistoryList(member.getId());
     }
 
-    @GetMapping("/detail/{solveHistoryId}")
+    @GetMapping("/detail/{solveCount}")
     @Operation(summary = "문제 풀이 기록 세부 조회", description = "사용자의 문제 풀이 기록 세부를 조회합니다. 문제 풀이 기록 번호를 통해 세부 조회가 가능합니다.")
     @ApiResponse(responseCode = "200", description = "문제 풀이 기록 세부 조회 성공")
     public List<SolveHistoryDetailResponse> getHistoryDetail(@AuthenticationPrincipal Member member,
-            @PathVariable Long solveHistoryId) {
-        return solveHistoryService.getHistoryDetail(member.getId(), solveHistoryId);
+            @PathVariable Long solveCount) {
+        return solveHistoryService.getHistoryDetail(member.getId(), solveCount);
     }
 }
