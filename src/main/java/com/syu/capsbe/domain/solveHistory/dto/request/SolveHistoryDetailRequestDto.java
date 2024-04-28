@@ -1,5 +1,7 @@
 package com.syu.capsbe.domain.solveHistory.dto.request;
 
+import com.syu.capsbe.domain.solveHistory.SolveHistory;
+import com.syu.capsbe.domain.solveHistory.SolveHistoryDetail;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,4 +22,14 @@ public class SolveHistoryDetailRequestDto {
 
     @Schema(description = "정답 여부", example = "true")
     private boolean isCorrect;
+
+    public SolveHistoryDetail toEntity(SolveHistory solveHistory) {
+        return SolveHistoryDetail.builder()
+                .solveHistory(solveHistory)
+                .question(question)
+                .answer(answer)
+                .userAnswer(userAnswer)
+                .isCorrect(isCorrect)
+                .build();
+    }
 }
