@@ -1,7 +1,7 @@
 package com.syu.capsbe.domain.solveHistory.application;
 
 import com.syu.capsbe.domain.member.Member;
-import com.syu.capsbe.domain.member.MemberRepository;
+import com.syu.capsbe.domain.member.application.MemberService;
 import com.syu.capsbe.domain.problem.ProblemType;
 import com.syu.capsbe.domain.solveHistory.SolveHistory;
 import com.syu.capsbe.domain.solveHistory.SolveHistoryDetail;
@@ -11,6 +11,8 @@ import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistoryDetailRequestD
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistoryRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.response.SolveHistoryDetailResponse;
 import com.syu.capsbe.domain.solveHistory.dto.response.SolveHistoryResponseDto;
+import com.syu.capsbe.domain.solveHistory.exception.SolveHistoryExistsException;
+import com.syu.capsbe.domain.solveHistory.exception.common.SolveHistoryErrorCode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,72 +25,51 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class SolveHistoryServiceImpl implements SolveHistoryService {
 
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final SolveHistoryRepository solveHistoryRepository;
     private final SolveHistoryDetailRepository solveHistoryDetailRepository;
 
     @Override
     @Transactional
     public void submitSolveHistory(SolveHistoryRequestDto request, Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow();
+        Member member = memberService.findByMemberId(memberId);
 
-        member.updateSolveCount();
+        Long solveCount = member.updateSolveCount();
 
-        Long solveCount = member.getSolveCount();
-
-        // SolveHistoryRequestDto 내부 list로 존재하는 값을 저장하려고 해
-        List<SolveHistoryDetailRequestDto> solveHistoryDetail = request.getSolveHistoryDetail();
-
-        // solveHistoryDetail을 solveHistoryDetail로 엔티티 변환
-        List<SolveHistoryDetail> solveHistoryDetailList = new ArrayList<>();
-
-        // solveHistory 껍데기 저장
-        ProblemType problemType = ProblemType.valueOf(request.getProblemType());
-
-        LocalDateTime localDateTime = LocalDateTime.now();
-
-        SolveHistory solveHistory = new SolveHistory(member, solveCount, problemType, localDateTime, solveHistoryDetailList);
+        SolveHistory solveHistory = new SolveHistory(member, solveCount,
+                ProblemType.valueOf(request.getProblemType()), LocalDateTime.now());
 
         solveHistoryRepository.save(solveHistory);
 
-        for (SolveHistoryDetailRequestDto dto : solveHistoryDetail) {
-            // SolveHistoryDetail 엔티티 생성
-            SolveHistoryDetail build = SolveHistoryDetail.builder()
-                    .solveHistory(solveHistory)
-                    .question(dto.getQuestion())
-                    .answer(dto.getAnswer())
-                    .userAnswer(dto.getUserAnswer())
-                    .isCorrect(dto.isCorrect())
-                    .build();
+        List<SolveHistoryDetailRequestDto> submittedSolveHistory = request.getSolveHistoryDetail();
 
-            solveHistory.addSolveHistoryDetail(build);
-            solveHistoryDetailRepository.save(build);
-
-            solveHistoryDetailList.add(build);
+        for (SolveHistoryDetailRequestDto dto : submittedSolveHistory) {
+            solveHistoryDetailRepository.save(dto.toEntity(solveHistory));
         }
     }
 
     @Override
     public List<SolveHistoryResponseDto> getHistoryList(Long memberId) {
-        List<SolveHistory> byMemberId = solveHistoryRepository.findByMemberId(memberId);
+        List<SolveHistory> solveHistoryList = solveHistoryRepository.findByMemberId(memberId);
 
+        return convertSolveHistoryEntityToDto(solveHistoryList);
+    }
+
+    @Override
+    public List<SolveHistoryDetailResponse> getHistoryDetails(Long memberId, Long solveCount) {
+        SolveHistory solveHistory = solveHistoryRepository.findByMemberIdAndSolveHistoryId(memberId, solveCount)
+                .orElseThrow(() -> SolveHistoryExistsException.of(SolveHistoryErrorCode.SOLVE_HISTORY_IS_NOT_EXISTS));
+
+        return convertSolveHistoryDetailsEntityToDto(solveHistory);
+    }
+
+    private List<SolveHistoryResponseDto> convertSolveHistoryEntityToDto(
+            List<SolveHistory> solveHistoryList) {
         List<SolveHistoryResponseDto> solveHistoryResponseDtoList = new ArrayList<>();
 
-        for (SolveHistory solveHistory : byMemberId) {
-            List<SolveHistoryDetail> solveHistoryDetail = solveHistory.getSolveHistoryDetail();
-
-            List<SolveHistoryDetailResponse> solveHistoryDetailResponseList = new ArrayList<>();
-
-            for (SolveHistoryDetail detail : solveHistoryDetail) {
-                SolveHistoryDetailResponse solveHistoryDetailResponse = SolveHistoryDetailResponse.builder()
-                        .question(detail.getQuestion())
-                        .answer(detail.getAnswer())
-                        .userAnswer(detail.getUserAnswer())
-                        .isCorrect(detail.isCorrect())
-                        .build();
-
-                solveHistoryDetailResponseList.add(solveHistoryDetailResponse);
-            }
+        for (SolveHistory solveHistory : solveHistoryList) {
+            List<SolveHistoryDetailResponse> solveHistoryDetailResponseList = convertSolveHistoryDetailsEntityToDto(
+                    solveHistory);
 
             SolveHistoryResponseDto solveHistoryResponseDto = SolveHistoryResponseDto.builder()
                     .solveHistoryCount(solveHistory.getSolveCount())
@@ -101,16 +82,13 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
         return solveHistoryResponseDtoList;
     }
 
-    @Override
-    public List<SolveHistoryDetailResponse> getHistoryDetail(Long memberId, Long solveHistoryId) {
-
-        SolveHistory solveHistory = solveHistoryRepository.findByMemberIdAndSolveHistoryId(memberId, solveHistoryId).orElseThrow();
-
-        List<SolveHistoryDetail> solveHistoryDetail = solveHistory.getSolveHistoryDetail();
+    private List<SolveHistoryDetailResponse> convertSolveHistoryDetailsEntityToDto(
+            SolveHistory solveHistory) {
+        List<SolveHistoryDetail> solveHistoryDetails = solveHistory.getSolveHistoryDetails();
 
         List<SolveHistoryDetailResponse> solveHistoryDetailResponseList = new ArrayList<>();
 
-        for (SolveHistoryDetail detail : solveHistoryDetail) {
+        for (SolveHistoryDetail detail : solveHistoryDetails) {
             SolveHistoryDetailResponse solveHistoryDetailResponse = SolveHistoryDetailResponse.builder()
                     .question(detail.getQuestion())
                     .answer(detail.getAnswer())
