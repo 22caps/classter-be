@@ -2,6 +2,8 @@ package com.syu.capsbe.domain.member.application;
 
 import com.syu.capsbe.domain.member.Member;
 import com.syu.capsbe.domain.member.MemberRepository;
+import com.syu.capsbe.domain.member.dto.request.MemberUpdateRequestDto;
+import com.syu.capsbe.domain.member.dto.response.MemberInfoResponseDto;
 import com.syu.capsbe.domain.member.exception.MemberExistsException;
 import com.syu.capsbe.domain.member.exception.common.MemberErrorCode;
 import com.syu.capsbe.domain.member.vo.EmailVo;
@@ -45,5 +47,20 @@ public class MemberServiceImpl implements MemberService {
     public Member findByEmail(String email) {
         return memberRepository.findByEmail(new EmailVo(email))
                 .orElseThrow(() -> MemberExistsException.of(MemberErrorCode.MEMBER_IS_NOT_EXIST));
+    }
+
+    @Override
+    public MemberInfoResponseDto getMemberInfo(Long memberId) {
+        Member member = findByMemberId(memberId);
+        return MemberInfoResponseDto.of(member.getEmail().getEmail(), member.getGoalScore());
+    }
+
+    @Override
+    @Transactional
+    public MemberInfoResponseDto updateMember(Long memberId,
+            MemberUpdateRequestDto memberUpdateRequestDto) {
+        Member member = findByMemberId(memberId);
+        member.updateGoalScore(memberUpdateRequestDto.getGoalScore());
+        return MemberInfoResponseDto.of(member.getEmail().getEmail(), member.getGoalScore());
     }
 }
