@@ -1,6 +1,7 @@
 package com.syu.capsbe.domain.member.application;
 
 import com.syu.capsbe.domain.member.Member;
+import com.syu.capsbe.domain.member.dto.response.MemberInfoResponseDto;
 
 public interface MemberService {
 
@@ -13,4 +14,6 @@ public interface MemberService {
     Member findByUuid(String uuid);
 
     Member findByEmail(String email);
+
+    MemberInfoResponseDto getMemberInfo(Long memberId);
 }
