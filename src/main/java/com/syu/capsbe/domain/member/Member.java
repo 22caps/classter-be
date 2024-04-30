@@ -1,5 +1,7 @@
 package com.syu.capsbe.domain.member;
 
+import com.syu.capsbe.domain.member.exception.InvalidGoalScoreException;
+import com.syu.capsbe.domain.member.exception.common.MemberErrorCode;
 import com.syu.capsbe.domain.member.vo.EmailVo;
 import com.syu.capsbe.global.entity.BaseEntity;
 import jakarta.persistence.Column;
@@ -96,5 +98,17 @@ public class Member extends BaseEntity implements UserDetails {
     public Long updateSolveCount() {
         this.solveCount++;
         return this.solveCount;
+    }
+
+    public int updateGoalScore(int goalScore) {
+        validateGoalScore(goalScore);
+        this.goalScore = goalScore;
+        return this.goalScore;
+    }
+
+    private void validateGoalScore(int goalScore) {
+        if (goalScore <= 100 || goalScore > 990) {
+            throw InvalidGoalScoreException.of(MemberErrorCode.INVALID_GOAL_SCORE);
+        }
     }
 }
