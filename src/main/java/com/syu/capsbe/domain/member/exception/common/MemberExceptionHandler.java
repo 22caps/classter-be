@@ -1,5 +1,6 @@
 package com.syu.capsbe.domain.member.exception.common;
 
+import com.syu.capsbe.domain.member.exception.InvalidGoalScoreException;
 import com.syu.capsbe.domain.member.exception.MemberEmailInvalidException;
 import com.syu.capsbe.domain.member.exception.MemberExistsException;
 import com.syu.capsbe.global.response.message.ErrorResponse;
@@ -25,6 +26,13 @@ public class MemberExceptionHandler {
 
     @ExceptionHandler(MemberExistsException.class)
     public ResponseEntity<ErrorResponse> catchMemberExists(MemberExistsException e) {
+        log.warn(e.getErrorCode());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of(e.getErrorCode(), e.getErrorMessage()));
+    }
+
+    @ExceptionHandler(InvalidGoalScoreException.class)
+    public ResponseEntity<ErrorResponse> catchInvalidGoalScore(InvalidGoalScoreException e) {
         log.warn(e.getErrorCode());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.of(e.getErrorCode(), e.getErrorMessage()));
