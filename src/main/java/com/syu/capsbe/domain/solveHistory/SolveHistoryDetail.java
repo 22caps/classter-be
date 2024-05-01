@@ -46,7 +46,6 @@ public class SolveHistoryDetail {
                 .question(solveHistoryDetailRequestDto.getQuestion())
                 .answer(solveHistoryDetailRequestDto.getAnswer())
                 .userAnswer(solveHistoryDetailRequestDto.getUserAnswer())
-                .isCorrect(solveHistoryDetailRequestDto.isCorrect())
                 .build();
     }
 }
