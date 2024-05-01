@@ -42,6 +42,8 @@ public class SolveHistory {
 
     private LocalDateTime solveDate;
 
+    private boolean isCompleted;
+
     @Builder
     public SolveHistory(Member member, Long solveCount, ProblemType problemType,
             LocalDateTime solveDate) {
@@ -49,5 +51,9 @@ public class SolveHistory {
         this.solveCount = solveCount;
         this.problemType = problemType;
         this.solveDate = solveDate;
+    }
+
+    public void completeSolveHistory() {
+        this.isCompleted = true;
     }
 }
