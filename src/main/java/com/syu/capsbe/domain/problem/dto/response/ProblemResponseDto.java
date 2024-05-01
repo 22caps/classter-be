@@ -20,11 +20,8 @@ public class ProblemResponseDto {
     @Schema(description = "문제", example = "Could you please send me the report by 3 PM today? Sure, I'll ______ it to you before then. Options: a) email, b) describe, c) announce, d) discuss")
     private final String question;
 
-    @Schema(description = "정답", example = "a")
-    private final String answer;
-
     public static ProblemResponseDto of(Problem problem) {
-        return new ProblemResponseDto(problem.getId(), problem.getProblemType().name(), problem.getQuestion(),
-                problem.getAnswer());
+        return new ProblemResponseDto(problem.getId(), problem.getProblemType().name(),
+                problem.getQuestion());
     }
 }
