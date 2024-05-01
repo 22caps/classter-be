@@ -40,8 +40,7 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public ProblemHintResponseDto getHintByQuestion(ProblemHintRequestDto problemHintRequestDto) {
-        Long problemId = problemHintRequestDto.getProblemId();
-        Problem problem = problemRepository.findProblemById(problemId)
+        Problem problem = problemRepository.findProblemById(problemHintRequestDto.getProblemId())
                 .orElseThrow(() -> ProblemExistsException.of(ProblemErrorCode.PROBLEM_IS_NOT_EXISTS));
 
         PromptResponseDto promptResponse = promptService.getPromptResponse(problem.getQuestion());
