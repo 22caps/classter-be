@@ -31,7 +31,7 @@ public class ProblemController {
     }
 
     @GetMapping("/hint")
-    @Operation(summary = "힌트 조회", description = "문제에 대한 힌트를 조회합니다.")
+    @Operation(summary = "힌트 조회", description = "문제 번호를 통해 문제에 대한 힌트를 LLM을 통해 요청하여 응답받습니다.")
     @ApiResponse(responseCode = "200", description = "힌트 조회 성공")
     public ProblemHintResponseDto getHint(@RequestBody ProblemHintRequestDto problemHintRequestDto) {
         return problemService.getHintByQuestion(problemHintRequestDto);
