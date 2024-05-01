@@ -11,8 +11,14 @@ import lombok.Getter;
 @AllArgsConstructor
 public class SolveHistoryDetailRequestDto {
 
-    @Schema(description = "문제 번호", example = "1")
+    @Schema(description = "문제 번호(데이터베이스에 저장된 번호)", example = "1")
     private Long problemId;
+
+    @Schema(description = "현재 문제 번호", example = "1")
+    private int problemNumber;
+
+    @Schema(description = "마지막 문제 번호", example = "5")
+    private int lastProblemNumber;
 
     @Schema(description = "유저 제출 정답", example = "c")
     private String userAnswer;
