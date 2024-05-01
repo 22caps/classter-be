@@ -1,11 +1,14 @@
 package com.syu.capsbe.domain.problem.application;
 
+import com.syu.capsbe.domain.problem.Problem;
 import com.syu.capsbe.domain.problem.ProblemRepository;
 import com.syu.capsbe.domain.problem.ProblemType;
 import com.syu.capsbe.domain.problem.dto.request.ProblemHintRequestDto;
 import com.syu.capsbe.domain.problem.dto.request.ProblemRequestDto;
 import com.syu.capsbe.domain.problem.dto.response.ProblemHintResponseDto;
 import com.syu.capsbe.domain.problem.dto.response.ProblemResponseDto;
+import com.syu.capsbe.domain.problem.exception.ProblemExistsException;
+import com.syu.capsbe.domain.problem.exception.common.ProblemErrorCode;
 import com.syu.capsbe.domain.prompt.application.PromptService;
 import com.syu.capsbe.domain.prompt.dto.response.PromptResponseDto;
 import java.util.List;
@@ -37,8 +40,11 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public ProblemHintResponseDto getHintByQuestion(ProblemHintRequestDto problemHintRequestDto) {
-        PromptResponseDto promptResponse = promptService.getPromptResponse(
-                problemHintRequestDto.getQuestion());
+        Long problemId = problemHintRequestDto.getProblemId();
+        Problem problem = problemRepository.findProblemById(problemId)
+                .orElseThrow(() -> ProblemExistsException.of(ProblemErrorCode.PROBLEM_IS_NOT_EXISTS));
+
+        PromptResponseDto promptResponse = promptService.getPromptResponse(problem.getQuestion());
 
         return ProblemHintResponseDto.of(promptResponse.getContent());
     }
