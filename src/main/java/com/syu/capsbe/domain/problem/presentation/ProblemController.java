@@ -33,6 +33,7 @@ public class ProblemController {
     @GetMapping("/hint")
     @Operation(summary = "힌트 조회", description = "문제 번호를 통해 문제에 대한 힌트를 LLM을 통해 요청하여 응답받습니다.")
     @ApiResponse(responseCode = "200", description = "힌트 조회 성공")
+    @ApiResponse(responseCode = "E3001", description = "해당 문제 번호의 문제가 존재하지 않습니다.")
     public ProblemHintResponseDto getHint(@RequestBody ProblemHintRequestDto problemHintRequestDto) {
         return problemService.getHintByQuestion(problemHintRequestDto);
     }
