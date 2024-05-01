@@ -43,8 +43,6 @@ public class SolveHistoryDetail {
     public SolveHistoryDetail toEntity(SolveHistoryDetailRequestDto solveHistoryDetailRequestDto, SolveHistory solveHistory) {
         return SolveHistoryDetail.builder()
                 .solveHistory(solveHistory)
-                .question(solveHistoryDetailRequestDto.getQuestion())
-                .answer(solveHistoryDetailRequestDto.getAnswer())
                 .userAnswer(solveHistoryDetailRequestDto.getUserAnswer())
                 .build();
     }
