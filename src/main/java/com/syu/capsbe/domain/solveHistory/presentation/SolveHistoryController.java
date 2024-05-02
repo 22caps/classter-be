@@ -37,14 +37,14 @@ public class SolveHistoryController {
     }
 
     @GetMapping("/list")
-    @Operation(summary = "문제 풀이 기록 전체 조회", description = "사용자의 문제 풀이 기록을 조회합니다.")
+    @Operation(summary = "문제 풀이 기록 전체 조회", description = "사용자의 문제 풀이 기록을 조회합니다. 풀이 완료가 된 문제들만 조회 가능합니다.")
     @ApiResponse(responseCode = "200", description = "문제 풀이 기록 전체 조회 성공")
     public List<SolveHistoryResponseDto> getHistoryList(@AuthenticationPrincipal Member member) {
         return solveHistoryService.getHistoryList(member.getId());
     }
 
     @GetMapping("/detail/{solveCount}")
-    @Operation(summary = "문제 풀이 기록 세부 조회", description = "사용자의 문제 풀이 기록 세부를 조회합니다. 문제 풀이 기록 번호를 통해 세부 조회가 가능합니다.")
+    @Operation(summary = "문제 풀이 기록 세부 조회", description = "사용자의 문제 풀이 기록 세부를 조회합니다. 문제 풀이 기록 번호를 통해 세부 조회가 가능합니다. 풀이 완료가 된 문제만 조회 가능합니다.")
     @ApiResponse(responseCode = "200", description = "문제 풀이 기록 세부 조회 성공")
     @ApiResponse(responseCode = "E2001", description = "해당 문제 풀이 기록이 존재하지 않습니다.")
     public List<SolveHistoryDetailResponse> getHistoryDetails(
