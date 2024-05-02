@@ -90,15 +90,16 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
 
     @Override
     public List<SolveHistoryResponseDto> getHistoryList(Long memberId) {
-        List<SolveHistory> solveHistoryList = solveHistoryRepository.findByMemberId(memberId);
+        List<SolveHistory> solveHistoryList = solveHistoryRepository.findByMemberIdAndIsCompletedIsTrue(
+                memberId);
 
         return convertSolveHistoryEntityToDto(solveHistoryList);
     }
 
     @Override
     public List<SolveHistoryDetailResponse> getHistoryDetails(Long memberId, Long solveCount) {
-        SolveHistory solveHistory = solveHistoryRepository.findByMemberIdAndSolveHistoryId(memberId,
-                        solveCount)
+        SolveHistory solveHistory = solveHistoryRepository.findByMemberIdAndSolveHistoryIdAndIsCompletedIsTrue(
+                        memberId, solveCount)
                 .orElseThrow(() -> SolveHistoryExistsException.of(
                         SolveHistoryErrorCode.SOLVE_HISTORY_IS_NOT_EXISTS));
 
