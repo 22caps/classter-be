@@ -33,22 +33,18 @@ public class ProblemServiceImpl implements ProblemService {
     @Override
     @Transactional
     public List<ProblemResponseDto> getProblemsByProblemType(Long memberId, ProblemRequestDto problemRequestDto) {
-        // dto에서 type을 enum 값으로 맞게 변경
         ProblemType problemType = ProblemType.valueOf(problemRequestDto.getProblemType());
 
-        // 문제 풀이를 시작한다는 뜻으로 solveCount를 1 증가시킴
         Member member = memberService.findByMemberId(memberId);
         member.updateSolveCount();
 
-        // 껍데기 생성
         solveHistoryService.setSolveHistory(member, member.getSolveCount(), problemType);
 
-        // dto에서 count를 가져와서 해당 type의 문제를 count만큼 가져옴
         return problemRepository.getProblemTypeIsWord(problemType,
                         problemRequestDto.getProblemCount())
                 .stream()
                 .map(ProblemResponseDto::of)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
