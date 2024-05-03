@@ -5,6 +5,8 @@ import com.syu.capsbe.domain.member.application.MemberService;
 import com.syu.capsbe.domain.problem.Problem;
 import com.syu.capsbe.domain.problem.ProblemRepository;
 import com.syu.capsbe.domain.problem.ProblemType;
+import com.syu.capsbe.domain.problem.exception.ProblemExistsException;
+import com.syu.capsbe.domain.problem.exception.common.ProblemErrorCode;
 import com.syu.capsbe.domain.solveHistory.SolveHistory;
 import com.syu.capsbe.domain.solveHistory.SolveHistoryDetail;
 import com.syu.capsbe.domain.solveHistory.SolveHistoryDetailRepository;
@@ -35,33 +37,24 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
 
     @Override
     @Transactional
-    public SubmissionResponseDto submitSolveHistory(SolveHistoryDetailRequestDto request,
-            Long memberId) {
-        // 사용자가 제출한 문제 풀이 기록을 저장
-        // 각 문제별로 저장하되, 문제 풀이 시작(문제 리스트 가져오기) 시 설정한 solveCount로 세트를 묶는다.
-        // 반환 시 정답 여부를 반환하게 한다.
+    public SubmissionResponseDto submitSolveHistory(SolveHistoryDetailRequestDto request, Long memberId) {
         Member member = memberService.findByMemberId(memberId);
         Long solveCount = member.getSolveCount();
+
         Long problemId = request.getProblemId();
-
         Problem problem = problemRepository.findById(problemId)
-                .orElseThrow(() -> SolveHistoryExistsException.of(
-                        SolveHistoryErrorCode.SOLVE_HISTORY_IS_NOT_EXISTS));
+                .orElseThrow(() -> ProblemExistsException.of(ProblemErrorCode.PROBLEM_IS_NOT_EXISTS));
 
-        SolveHistory solveHistory = solveHistoryRepository.findByMemberIdAndSolveHistoryId(memberId,
-                        solveCount)
-                .orElseThrow(() -> SolveHistoryExistsException.of(
-                        SolveHistoryErrorCode.SOLVE_HISTORY_IS_NOT_EXISTS));
+        SolveHistory solveHistory = solveHistoryRepository.findByMemberIdAndSolveHistoryId(memberId, solveCount)
+                .orElseThrow(() -> SolveHistoryExistsException.of(SolveHistoryErrorCode.SOLVE_HISTORY_IS_NOT_EXISTS));
 
         boolean isCorrect = isCorrectAnswer(problem.getAnswer(), request.getUserAnswer());
 
-        SolveHistoryDetail solveHistoryDetail = new SolveHistoryDetail(solveHistory, problem,
-                request.getUserAnswer(), isCorrect);
+        solveHistoryDetailRepository.save(
+                new SolveHistoryDetail(solveHistory, problem, request.getUserAnswer(), isCorrect)
+        );
 
-        solveHistoryDetailRepository.save(solveHistoryDetail);
-
-        checkSolverHistoryComplete(solveHistory, request.getProblemNumber(),
-                request.getLastProblemNumber());
+        checkSolverHistoryComplete(solveHistory, request.getProblemNumber(), request.getLastProblemNumber());
 
         return SubmissionResponseDto.of(isCorrect);
     }
@@ -70,48 +63,36 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
         return answer.equals(userAnswer);
     }
 
-    private void checkSolverHistoryComplete(SolveHistory solveHistory, int problemNumber,
-            int lastProblemNumber) {
-        if (problemNumber == lastProblemNumber) {
-            solveHistory.completeSolveHistory();
-        }
+    private void checkSolverHistoryComplete(SolveHistory solveHistory, int problemNumber, int lastProblemNumber) {
+        if (problemNumber == lastProblemNumber) solveHistory.completeSolveHistory();
     }
 
     @Override
     @Transactional
     public void setSolveHistory(Member member, Long solveCount, ProblemType problemType) {
-        // 문제 요청 시 껍데기 저장
-        SolveHistory solveHistory = new SolveHistory(member, solveCount, problemType,
-                LocalDateTime.now());
-
-        solveHistoryRepository.save(solveHistory);
+        solveHistoryRepository.save(
+                new SolveHistory(member, solveCount, problemType, LocalDateTime.now())
+        );
     }
 
     @Override
     public List<SolveHistoryResponseDto> getHistoryList(Long memberId) {
-        List<SolveHistory> solveHistoryList = solveHistoryRepository.findByMemberIdAndIsCompletedIsTrue(
-                memberId);
-
-        return convertSolveHistoryEntityToDto(solveHistoryList);
+        return convertSolveHistoryEntityToDto(solveHistoryRepository.findByMemberIdAndIsCompletedIsTrue(memberId));
     }
 
     @Override
     public List<SolveHistoryDetailResponse> getHistoryDetails(Long memberId, Long solveCount) {
-        SolveHistory solveHistory = solveHistoryRepository.findByMemberIdAndSolveHistoryIdAndIsCompletedIsTrue(
-                        memberId, solveCount)
-                .orElseThrow(() -> SolveHistoryExistsException.of(
-                        SolveHistoryErrorCode.SOLVE_HISTORY_IS_NOT_EXISTS));
+        SolveHistory solveHistory = solveHistoryRepository.findByMemberIdAndSolveHistoryIdAndIsCompletedIsTrue(memberId, solveCount)
+                .orElseThrow(() -> SolveHistoryExistsException.of(SolveHistoryErrorCode.SOLVE_HISTORY_IS_NOT_EXISTS));
 
         return convertSolveHistoryDetailsEntityToDto(solveHistory);
     }
 
-    private List<SolveHistoryResponseDto> convertSolveHistoryEntityToDto(
-            List<SolveHistory> solveHistoryList) {
+    private List<SolveHistoryResponseDto> convertSolveHistoryEntityToDto(List<SolveHistory> solveHistoryList) {
         List<SolveHistoryResponseDto> solveHistoryResponseDtoList = new ArrayList<>();
 
         for (SolveHistory solveHistory : solveHistoryList) {
-            List<SolveHistoryDetailResponse> solveHistoryDetailResponseList = convertSolveHistoryDetailsEntityToDto(
-                    solveHistory);
+            List<SolveHistoryDetailResponse> solveHistoryDetailResponseList = convertSolveHistoryDetailsEntityToDto(solveHistory);
 
             SolveHistoryResponseDto solveHistoryResponseDto = SolveHistoryResponseDto.builder()
                     .solveHistoryCount(solveHistory.getSolveCount())
@@ -124,8 +105,7 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
         return solveHistoryResponseDtoList;
     }
 
-    private List<SolveHistoryDetailResponse> convertSolveHistoryDetailsEntityToDto(
-            SolveHistory solveHistory) {
+    private List<SolveHistoryDetailResponse> convertSolveHistoryDetailsEntityToDto(SolveHistory solveHistory) {
         List<SolveHistoryDetail> solveHistoryDetails = solveHistory.getSolveHistoryDetails();
 
         List<SolveHistoryDetailResponse> solveHistoryDetailResponseList = new ArrayList<>();
