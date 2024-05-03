@@ -22,11 +22,4 @@ public class SolveHistoryDetailRequestDto {
 
     @Schema(description = "유저 제출 정답", example = "c")
     private String userAnswer;
-
-    public SolveHistoryDetail toEntity(SolveHistory solveHistory) {
-        return SolveHistoryDetail.builder()
-                .solveHistory(solveHistory)
-                .userAnswer(userAnswer)
-                .build();
-    }
 }
