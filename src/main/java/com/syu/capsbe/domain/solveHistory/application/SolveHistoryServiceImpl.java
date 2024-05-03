@@ -43,7 +43,7 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
         Member member = memberService.findByMemberId(memberId);
         Long solveCount = member.getSolveCount();
         Long problemId = request.getProblemId();
-//        Problem problem = problemService.getProblemById(problemId);
+
         Problem problem = problemRepository.findById(problemId)
                 .orElseThrow(() -> SolveHistoryExistsException.of(
                         SolveHistoryErrorCode.SOLVE_HISTORY_IS_NOT_EXISTS));
@@ -55,9 +55,8 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
 
         boolean isCorrect = isCorrectAnswer(problem.getAnswer(), request.getUserAnswer());
 
-        SolveHistoryDetail solveHistoryDetail = new SolveHistoryDetail(solveHistory,
-                problem.getQuestion(),
-                problem.getAnswer(), request.getUserAnswer(), isCorrect);
+        SolveHistoryDetail solveHistoryDetail = new SolveHistoryDetail(solveHistory, problem,
+                request.getUserAnswer(), isCorrect);
 
         solveHistoryDetailRepository.save(solveHistoryDetail);
 
@@ -133,8 +132,8 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
 
         for (SolveHistoryDetail detail : solveHistoryDetails) {
             SolveHistoryDetailResponse solveHistoryDetailResponse = SolveHistoryDetailResponse.builder()
-                    .question(detail.getQuestion())
-                    .answer(detail.getAnswer())
+                    .question(detail.getProblem().getQuestion())
+                    .answer(detail.getProblem().getAnswer())
                     .userAnswer(detail.getUserAnswer())
                     .isCorrect(detail.isCorrect())
                     .build();
