@@ -11,25 +11,15 @@ import lombok.Getter;
 @AllArgsConstructor
 public class SolveHistoryDetailRequestDto {
 
-    @Schema(description = "문제", example = "Fill in the blank: 'Due to unforeseen circumstances, the meeting has been _______.' Choices: a) canceled, b) advanced, c) delayed, d) extended")
-    private String question;
+    @Schema(description = "문제 번호(데이터베이스에 저장된 번호)", example = "1")
+    private Long problemId;
 
-    @Schema(description = "정답", example = "c")
-    private String answer;
+    @Schema(description = "현재 문제 번호", example = "1")
+    private int problemNumber;
+
+    @Schema(description = "마지막 문제 번호", example = "5")
+    private int lastProblemNumber;
 
     @Schema(description = "유저 제출 정답", example = "c")
     private String userAnswer;
-
-    @Schema(description = "정답 여부", example = "true")
-    private boolean isCorrect;
-
-    public SolveHistoryDetail toEntity(SolveHistory solveHistory) {
-        return SolveHistoryDetail.builder()
-                .solveHistory(solveHistory)
-                .question(question)
-                .answer(answer)
-                .userAnswer(userAnswer)
-                .isCorrect(isCorrect)
-                .build();
-    }
 }
