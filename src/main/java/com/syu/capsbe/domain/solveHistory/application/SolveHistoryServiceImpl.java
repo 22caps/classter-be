@@ -113,6 +113,7 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
         for (SolveHistoryDetail detail : solveHistoryDetails) {
             SolveHistoryDetailResponse solveHistoryDetailResponse = SolveHistoryDetailResponse.builder()
                     .question(detail.getProblem().getQuestion())
+                    .choices(detail.getProblem().convertChoicesToList())
                     .answer(detail.getProblem().getAnswer())
                     .userAnswer(detail.getUserAnswer())
                     .isCorrect(detail.isCorrect())
