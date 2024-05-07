@@ -56,7 +56,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v1/auth/sign-up").permitAll() // 회원가입
                         .requestMatchers("/api/v1/auth/sign-in").permitAll() // 로그인
-                        .anyRequest().permitAll())
+                        .anyRequest().authenticated() // 그 외 요청은 인증 필요
+                )
 
                 // JWT 권한 필터 적용
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
