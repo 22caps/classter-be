@@ -5,8 +5,6 @@ import com.syu.capsbe.domain.member.application.MemberService;
 import com.syu.capsbe.domain.problem.Problem;
 import com.syu.capsbe.domain.problem.ProblemRepository;
 import com.syu.capsbe.domain.problem.ProblemType;
-import com.syu.capsbe.domain.problem.dto.request.ProblemHintRequestDto;
-import com.syu.capsbe.domain.problem.dto.request.ProblemRequestDto;
 import com.syu.capsbe.domain.problem.dto.response.ProblemHintResponseDto;
 import com.syu.capsbe.domain.problem.dto.response.ProblemResponseDto;
 import com.syu.capsbe.domain.problem.exception.ProblemExistsException;
@@ -15,7 +13,6 @@ import com.syu.capsbe.domain.prompt.application.PromptService;
 import com.syu.capsbe.domain.prompt.dto.response.PromptResponseDto;
 import com.syu.capsbe.domain.solveHistory.application.SolveHistoryService;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,8 +29,9 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     @Transactional
-    public List<ProblemResponseDto> getProblemsByProblemType(Long memberId, ProblemRequestDto problemRequestDto) {
-        ProblemType problemType = ProblemType.valueOf(problemRequestDto.getProblemType());
+    public List<ProblemResponseDto> getProblemsByProblemType(Long memberId,
+            String problemTypeRequest, int problemCountRequest) {
+        ProblemType problemType = ProblemType.valueOf(problemTypeRequest);
 
         Member member = memberService.findByMemberId(memberId);
         member.updateSolveCount();
@@ -41,15 +39,15 @@ public class ProblemServiceImpl implements ProblemService {
         solveHistoryService.setSolveHistory(member, member.getSolveCount(), problemType);
 
         return problemRepository.getProblemTypeIsWord(problemType,
-                        problemRequestDto.getProblemCount())
+                        problemCountRequest)
                 .stream()
                 .map(ProblemResponseDto::of)
                 .toList();
     }
 
     @Override
-    public ProblemHintResponseDto getHintByQuestion(ProblemHintRequestDto problemHintRequestDto) {
-        Problem problem = getProblemById(problemHintRequestDto.getProblemId());
+    public ProblemHintResponseDto getHintByQuestion(Long problemId) {
+        Problem problem = getProblemById(problemId);
 
         PromptResponseDto promptResponse = promptService.getPromptResponse(problem.getQuestion());
 
@@ -59,6 +57,7 @@ public class ProblemServiceImpl implements ProblemService {
     @Override
     public Problem getProblemById(Long problemId) {
         return problemRepository.findProblemById(problemId)
-                .orElseThrow(() -> ProblemExistsException.of(ProblemErrorCode.PROBLEM_IS_NOT_EXISTS));
+                .orElseThrow(
+                        () -> ProblemExistsException.of(ProblemErrorCode.PROBLEM_IS_NOT_EXISTS));
     }
 }
