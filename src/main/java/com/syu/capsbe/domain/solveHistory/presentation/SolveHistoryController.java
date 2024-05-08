@@ -3,8 +3,10 @@ package com.syu.capsbe.domain.solveHistory.presentation;
 import com.syu.capsbe.domain.member.Member;
 import com.syu.capsbe.domain.solveHistory.application.SolveHistoryService;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistoryDetailRequestDto;
+import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistorySetUpRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.response.SolveHistoryDetailResponse;
 import com.syu.capsbe.domain.solveHistory.dto.response.SolveHistoryResponseDto;
+import com.syu.capsbe.domain.solveHistory.dto.response.SolveHistorySetUpResponseDto;
 import com.syu.capsbe.domain.solveHistory.dto.response.SubmissionResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,6 +28,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class SolveHistoryController {
 
     private final SolveHistoryService solveHistoryService;
+
+    @PostMapping("/start")
+    @Operation(summary = "문제 풀이 시작", description = "문제 풀이를 시작합니다. 문제 풀이 시작 시 사용자의 문제 풀이 기록을 생성합니다.")
+    @ApiResponse(responseCode = "200", description = "문제 풀이 시작 성공")
+    public SolveHistorySetUpResponseDto startSolveHistory(
+            @AuthenticationPrincipal Member member,
+            @RequestBody SolveHistorySetUpRequestDto request) {
+        return solveHistoryService.setSolveHistory(request, member.getId());
+    }
 
     @PostMapping("/submit")
     @Operation(summary = "문제 풀이 기록 제출", description = "문제 풀이 기록을 제출합니다. 사용자는 모든 문제를 푼 후에 제출할 수 있습니다.")
