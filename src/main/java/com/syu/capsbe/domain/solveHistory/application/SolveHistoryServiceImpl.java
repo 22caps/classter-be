@@ -12,8 +12,10 @@ import com.syu.capsbe.domain.solveHistory.SolveHistoryDetail;
 import com.syu.capsbe.domain.solveHistory.SolveHistoryDetailRepository;
 import com.syu.capsbe.domain.solveHistory.SolveHistoryRepository;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistoryDetailRequestDto;
+import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistorySetUpRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.response.SolveHistoryDetailResponse;
 import com.syu.capsbe.domain.solveHistory.dto.response.SolveHistoryResponseDto;
+import com.syu.capsbe.domain.solveHistory.dto.response.SolveHistorySetUpResponseDto;
 import com.syu.capsbe.domain.solveHistory.dto.response.SubmissionResponseDto;
 import com.syu.capsbe.domain.solveHistory.exception.SolveHistoryExistsException;
 import com.syu.capsbe.domain.solveHistory.exception.common.SolveHistoryErrorCode;
@@ -30,10 +32,25 @@ import org.springframework.transaction.annotation.Transactional;
 public class SolveHistoryServiceImpl implements SolveHistoryService {
 
     private final MemberService memberService;
-    //    private final ProblemService problemService;
     private final ProblemRepository problemRepository;
     private final SolveHistoryRepository solveHistoryRepository;
     private final SolveHistoryDetailRepository solveHistoryDetailRepository;
+
+    @Override
+    @Transactional
+    public SolveHistorySetUpResponseDto setSolveHistory(SolveHistorySetUpRequestDto request, Long memberId) {
+        Member member = memberService.findByMemberId(memberId);
+        member.updateSolveCount();
+
+        Long solveCount = member.getSolveCount();
+        ProblemType problemType = ProblemType.valueOf(request.getProblemType());
+
+        SolveHistory solveHistory = solveHistoryRepository.save(
+                new SolveHistory(member, solveCount, problemType, LocalDateTime.now())
+        );
+
+        return SolveHistorySetUpResponseDto.of(solveHistory.getId());
+    }
 
     @Override
     @Transactional
@@ -65,14 +82,6 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
 
     private void checkSolverHistoryComplete(SolveHistory solveHistory, int problemNumber, int lastProblemNumber) {
         if (problemNumber == lastProblemNumber) solveHistory.completeSolveHistory();
-    }
-
-    @Override
-    @Transactional
-    public void setSolveHistory(Member member, Long solveCount, ProblemType problemType) {
-        solveHistoryRepository.save(
-                new SolveHistory(member, solveCount, problemType, LocalDateTime.now())
-        );
     }
 
     @Override
