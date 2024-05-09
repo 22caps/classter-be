@@ -44,9 +44,6 @@ public class Member extends BaseEntity implements UserDetails {
     private List<String> roles;
 
     @Column(nullable = false)
-    private Long solveCount;
-
-    @Column(nullable = false)
     private int goalScore;
 
     @Builder
@@ -54,7 +51,6 @@ public class Member extends BaseEntity implements UserDetails {
         this.email = new EmailVo(email);
         this.uuid = UUID.randomUUID().toString();
         this.roles = List.of("ROLE_USER");
-        this.solveCount = 0L;
         this.goalScore = 0;
     }
 
@@ -93,11 +89,6 @@ public class Member extends BaseEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public Long updateSolveCount() {
-        this.solveCount++;
-        return this.solveCount;
     }
 
     public int updateGoalScore(int goalScore) {
