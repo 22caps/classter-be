@@ -33,8 +33,6 @@ public class SolveHistory {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    private Long solveCount;
-
     @OneToMany(mappedBy = "solveHistory")
     private List<SolveHistoryDetail> solveHistoryDetails = new ArrayList<>();
 
@@ -45,10 +43,8 @@ public class SolveHistory {
     private boolean isCompleted;
 
     @Builder
-    public SolveHistory(Member member, Long solveCount, ProblemType problemType,
-            LocalDateTime solveDate) {
+    public SolveHistory(Member member, ProblemType problemType, LocalDateTime solveDate) {
         this.member = member;
-        this.solveCount = solveCount;
         this.problemType = problemType;
         this.solveDate = solveDate;
     }
