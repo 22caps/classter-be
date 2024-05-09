@@ -10,12 +10,11 @@ import java.util.List;
 
 public interface SolveHistoryService {
 
-    SolveHistorySetUpResponseDto setSolveHistory(SolveHistorySetUpRequestDto request,
-            Long memberId);
+    SolveHistorySetUpResponseDto setSolveHistory(SolveHistorySetUpRequestDto request, Long memberId);
 
     SubmissionResponseDto submitSolveHistory(SolveHistoryDetailRequestDto request, Long memberId);
 
     List<SolveHistoryResponseDto> getHistoryList(Long memberId);
 
-    List<SolveHistoryDetailResponse> getHistoryDetails(Long memberId, Long solveCount);
+    List<SolveHistoryDetailResponse> getHistoryDetails(Long memberId, Long solveHistoryId);
 }
