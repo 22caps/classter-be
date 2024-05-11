@@ -12,8 +12,10 @@ import com.syu.capsbe.domain.solveHistory.SolveHistoryDetail;
 import com.syu.capsbe.domain.solveHistory.SolveHistoryDetailRepository;
 import com.syu.capsbe.domain.solveHistory.SolveHistoryRepository;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistoryDetailRequestDto;
+import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistorySetUpRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.response.SolveHistoryDetailResponse;
 import com.syu.capsbe.domain.solveHistory.dto.response.SolveHistoryResponseDto;
+import com.syu.capsbe.domain.solveHistory.dto.response.SolveHistorySetUpResponseDto;
 import com.syu.capsbe.domain.solveHistory.dto.response.SubmissionResponseDto;
 import com.syu.capsbe.domain.solveHistory.exception.SolveHistoryExistsException;
 import com.syu.capsbe.domain.solveHistory.exception.common.SolveHistoryErrorCode;
@@ -30,22 +32,31 @@ import org.springframework.transaction.annotation.Transactional;
 public class SolveHistoryServiceImpl implements SolveHistoryService {
 
     private final MemberService memberService;
-    //    private final ProblemService problemService;
     private final ProblemRepository problemRepository;
     private final SolveHistoryRepository solveHistoryRepository;
     private final SolveHistoryDetailRepository solveHistoryDetailRepository;
 
     @Override
     @Transactional
-    public SubmissionResponseDto submitSolveHistory(SolveHistoryDetailRequestDto request, Long memberId) {
+    public SolveHistorySetUpResponseDto setSolveHistory(SolveHistorySetUpRequestDto request, Long memberId) {
         Member member = memberService.findByMemberId(memberId);
-        Long solveCount = member.getSolveCount();
 
-        Long problemId = request.getProblemId();
-        Problem problem = problemRepository.findById(problemId)
+        ProblemType problemType = ProblemType.valueOf(request.getProblemType());
+
+        SolveHistory solveHistory = solveHistoryRepository.save(
+                new SolveHistory(member, problemType, LocalDateTime.now())
+        );
+
+        return SolveHistorySetUpResponseDto.of(solveHistory.getId());
+    }
+
+    @Override
+    @Transactional
+    public SubmissionResponseDto submitSolveHistory(SolveHistoryDetailRequestDto request, Long memberId) {
+        Problem problem = problemRepository.findById(request.getProblemId())
                 .orElseThrow(() -> ProblemExistsException.of(ProblemErrorCode.PROBLEM_IS_NOT_EXISTS));
 
-        SolveHistory solveHistory = solveHistoryRepository.findByMemberIdAndSolveHistoryId(memberId, solveCount)
+        SolveHistory solveHistory = solveHistoryRepository.findByMemberIdAndSolveHistoryId(memberId, request.getSolveHistoryId())
                 .orElseThrow(() -> SolveHistoryExistsException.of(SolveHistoryErrorCode.SOLVE_HISTORY_IS_NOT_EXISTS));
 
         boolean isCorrect = isCorrectAnswer(problem.getAnswer(), request.getUserAnswer());
@@ -68,21 +79,13 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
     }
 
     @Override
-    @Transactional
-    public void setSolveHistory(Member member, Long solveCount, ProblemType problemType) {
-        solveHistoryRepository.save(
-                new SolveHistory(member, solveCount, problemType, LocalDateTime.now())
-        );
-    }
-
-    @Override
     public List<SolveHistoryResponseDto> getHistoryList(Long memberId) {
         return convertSolveHistoryEntityToDto(solveHistoryRepository.findByMemberIdAndIsCompletedIsTrue(memberId));
     }
 
     @Override
-    public List<SolveHistoryDetailResponse> getHistoryDetails(Long memberId, Long solveCount) {
-        SolveHistory solveHistory = solveHistoryRepository.findByMemberIdAndSolveHistoryIdAndIsCompletedIsTrue(memberId, solveCount)
+    public List<SolveHistoryDetailResponse> getHistoryDetails(Long memberId, Long solveHistoryId) {
+        SolveHistory solveHistory = solveHistoryRepository.findByMemberIdAndSolveHistoryIdAndIsCompletedIsTrue(memberId, solveHistoryId)
                 .orElseThrow(() -> SolveHistoryExistsException.of(SolveHistoryErrorCode.SOLVE_HISTORY_IS_NOT_EXISTS));
 
         return convertSolveHistoryDetailsEntityToDto(solveHistory);
@@ -95,7 +98,7 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
             List<SolveHistoryDetailResponse> solveHistoryDetailResponseList = convertSolveHistoryDetailsEntityToDto(solveHistory);
 
             SolveHistoryResponseDto solveHistoryResponseDto = SolveHistoryResponseDto.builder()
-                    .solveHistoryCount(solveHistory.getSolveCount())
+                    .solveHistoryId(solveHistory.getId())
                     .solveHistoryDetail(solveHistoryDetailResponseList)
                     .build();
 

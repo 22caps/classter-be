@@ -24,7 +24,7 @@ public class ProblemController {
     private final ProblemService problemService;
 
     @GetMapping("/{problemType}/{problemCount}")
-    @Operation(summary = "문제 조회", description = "문제 유형과 문제 개수를 통해 문제를 조회합니다. - 문제 풀이 시작")
+    @Operation(summary = "문제 조회", description = "문제 유형과 문제 개수를 통해 문제를 조회합니다.")
     @ApiResponse(responseCode = "200", description = "문제 조회 성공")
     public List<ProblemResponseDto> getProblems(
             @AuthenticationPrincipal Member member,

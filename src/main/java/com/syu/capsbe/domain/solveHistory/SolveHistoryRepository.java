@@ -15,9 +15,9 @@ public interface SolveHistoryRepository extends JpaRepository<SolveHistory, Long
     @Query("SELECT sh FROM SolveHistory sh WHERE sh.member.id = :memberId AND sh.isCompleted = true")
     List<SolveHistory> findByMemberIdAndIsCompletedIsTrue(Long memberId);
 
-    @Query("SELECT sh FROM SolveHistory sh WHERE sh.member.id = :memberId AND sh.solveCount = :solveCount")
-    Optional<SolveHistory> findByMemberIdAndSolveHistoryId(Long memberId, Long solveCount);
+    @Query("SELECT sh FROM SolveHistory sh WHERE sh.member.id = :memberId AND sh.id = :solveHistoryId")
+    Optional<SolveHistory> findByMemberIdAndSolveHistoryId(Long memberId, Long solveHistoryId);
 
-    @Query("SELECT sh FROM SolveHistory sh WHERE sh.member.id = :memberId AND sh.solveCount = :solveCount AND sh.isCompleted = true")
-    Optional<SolveHistory> findByMemberIdAndSolveHistoryIdAndIsCompletedIsTrue(Long memberId, Long solveCount);
+    @Query("SELECT sh FROM SolveHistory sh WHERE sh.member.id = :memberId AND sh.id = :solveHistoryId AND sh.isCompleted = true")
+    Optional<SolveHistory> findByMemberIdAndSolveHistoryIdAndIsCompletedIsTrue(Long memberId, Long solveHistoryId);
 }
