@@ -3,10 +3,19 @@ package com.syu.capsbe.domain.member.application;
 import com.syu.capsbe.domain.member.Member;
 import com.syu.capsbe.domain.member.MemberRepository;
 import com.syu.capsbe.domain.member.dto.request.MemberUpdateRequestDto;
+import com.syu.capsbe.domain.member.dto.response.CorrectResponseDto;
 import com.syu.capsbe.domain.member.dto.response.MemberInfoResponseDto;
 import com.syu.capsbe.domain.member.exception.MemberExistsException;
 import com.syu.capsbe.domain.member.exception.common.MemberErrorCode;
 import com.syu.capsbe.domain.member.vo.EmailVo;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,4 +72,35 @@ public class MemberServiceImpl implements MemberService {
         member.updateGoalScore(memberUpdateRequestDto.getGoalScore());
         return MemberInfoResponseDto.of(member.getEmail().getEmail(), member.getGoalScore());
     }
+
+    @Override
+    public List<CorrectResponseDto> getWeeklyPercentCorrect(Long memberId) {
+        ZoneId koreaZoneId = ZoneId.of("Asia/Seoul");
+        LocalDate now = LocalDate.now(koreaZoneId);
+        Map<LocalDate, CorrectResponseDto> rateMap = new HashMap<>();
+        for (int i = 0; i < 7; i++) {
+            LocalDate date = now.minusDays(i);
+            rateMap.put(date,
+                    new CorrectResponseDto(date, "0.00", date.getDayOfWeek().toString()));
+        }
+
+        List<Object[]> results = memberRepository.findWeeklyPercentCorrect(memberId);
+        for (Object[] result : results) {
+            Double accuracyRate = Double.parseDouble(String.valueOf(result[0]));
+            Date solveDate = (Date) result[1];
+            LocalDate localSolveDate = LocalDate.parse(solveDate.toString());
+            String dayOfWeek = (String) result[2];
+
+            if (rateMap.containsKey(localSolveDate)) {
+                rateMap.get(localSolveDate).setAccuracyRate(String.format("%.2f", accuracyRate));
+                rateMap.get(localSolveDate).setDay(dayOfWeek);
+            }
+        }
+
+        return rateMap.values().stream()
+                .sorted(Comparator.comparing(CorrectResponseDto::getSolveDate))
+                .collect(Collectors.toList());
+    }
 }
+
+
