@@ -3,10 +3,12 @@ package com.syu.capsbe.domain.member.presentation;
 import com.syu.capsbe.domain.member.Member;
 import com.syu.capsbe.domain.member.application.MemberService;
 import com.syu.capsbe.domain.member.dto.request.MemberUpdateRequestDto;
+import com.syu.capsbe.domain.member.dto.response.CorrectResponseDto;
 import com.syu.capsbe.domain.member.dto.response.MemberInfoResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,5 +41,12 @@ public class MemberController {
     public MemberInfoResponseDto updateMemberInfo(@AuthenticationPrincipal Member member,
             @RequestBody MemberUpdateRequestDto memberUpdateRequestDto) {
         return memberService.updateMember(member.getId(), memberUpdateRequestDto);
+    }
+
+    @GetMapping("/weekly-percent-correct")
+    @Operation(summary = "주간 정답률 반환", description = "주간 정답률을 반환합니다.")
+    @ApiResponse(responseCode = "200", description = "주간 정답률 반환 성공")
+    public List<CorrectResponseDto> getWeeklyPercentCorrect(@AuthenticationPrincipal Member member) {
+        return memberService.getWeeklyPercentCorrect(member.getId());
     }
 }
