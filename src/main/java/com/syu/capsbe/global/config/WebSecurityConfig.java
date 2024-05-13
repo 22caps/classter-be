@@ -54,9 +54,9 @@ public class WebSecurityConfig {
 
                 // api 별 권한 처리
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/auth/sign-up").permitAll() // 회원가입
-                        .requestMatchers("/api/v1/auth/sign-in").permitAll() // 로그인
-                        .anyRequest().authenticated() // 그 외 요청은 인증 필요
+                        .requestMatchers("/api/v1/auth/sign-up", "/api/v1/auth/sign-in").permitAll()
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/v2/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
+                        .anyRequest().authenticated()
                 )
 
                 // JWT 권한 필터 적용
