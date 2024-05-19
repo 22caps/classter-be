@@ -9,7 +9,6 @@ import com.syu.capsbe.domain.problem.exception.ProblemExistsException;
 import com.syu.capsbe.domain.problem.exception.common.ProblemErrorCode;
 import com.syu.capsbe.domain.prompt.application.PromptService;
 import com.syu.capsbe.domain.prompt.dto.response.PromptResponseDto;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,15 +22,12 @@ public class ProblemServiceImpl implements ProblemService {
     private final PromptService promptService;
 
     @Override
-    public List<ProblemResponseDto> getProblemsByProblemType(Long memberId,
-            String problemTypeRequest, int problemCountRequest) {
-        ProblemType problemType = ProblemType.valueOf(problemTypeRequest);
-
-        return problemRepository.getProblemTypeIsWord(problemType,
-                        problemCountRequest)
-                .stream()
-                .map(ProblemResponseDto::of)
-                .toList();
+    public ProblemResponseDto getProblemByProblemType(Long memberId, String problemTypeRequest) {
+        return ProblemResponseDto.of(
+                problemRepository.getProblemByProblemType(ProblemType.valueOf(problemTypeRequest))
+                        .orElseThrow(
+                                () -> ProblemExistsException.of(
+                                        ProblemErrorCode.PROBLEM_IS_NOT_EXISTS)));
     }
 
     @Override

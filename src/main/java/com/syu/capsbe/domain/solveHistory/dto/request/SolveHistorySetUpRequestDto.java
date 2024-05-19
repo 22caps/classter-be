@@ -13,4 +13,7 @@ public class SolveHistorySetUpRequestDto {
 
     @Schema(description = "문제 유형", example = "WORD | CONVERSATION | GRAMMAR")
     private String problemType;
+
+    @Schema(description = "문제 개수", example = "5")
+    private int problemCount;
 }

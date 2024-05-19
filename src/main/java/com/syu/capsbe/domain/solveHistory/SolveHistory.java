@@ -52,4 +52,8 @@ public class SolveHistory {
     public void completeSolveHistory() {
         this.isCompleted = true;
     }
+
+    public int getSolveHistoryDetailsSize() {
+        return this.solveHistoryDetails.size();
+    }
 }

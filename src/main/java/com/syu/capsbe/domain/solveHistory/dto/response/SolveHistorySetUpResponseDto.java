@@ -12,7 +12,10 @@ public class SolveHistorySetUpResponseDto {
     @Schema(description = "풀이 기록 번호", example = "1")
     private final Long solveHistoryId;
 
-    public static SolveHistorySetUpResponseDto of(Long solveHistoryId) {
-        return new SolveHistorySetUpResponseDto(solveHistoryId);
+    @Schema(description = "문제 개수", example = "5")
+    private final int problemCount;
+
+    public static SolveHistorySetUpResponseDto of(Long solveHistoryId, int problemCount) {
+        return new SolveHistorySetUpResponseDto(solveHistoryId, problemCount);
     }
 }
