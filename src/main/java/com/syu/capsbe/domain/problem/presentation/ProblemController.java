@@ -7,7 +7,6 @@ import com.syu.capsbe.domain.problem.dto.response.ProblemResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,15 +22,14 @@ public class ProblemController {
 
     private final ProblemService problemService;
 
-    @GetMapping("/{problemType}/{problemCount}")
-    @Operation(summary = "문제 조회", description = "문제 유형과 문제 개수를 통해 문제를 조회합니다.")
+    @GetMapping("/{problemType}")
+    @Operation(summary = "문제 조회", description = "문제 유형을 통해 문제를 조회합니다. 해당 요청은 문제 풀이 시마다 호출됩니다.")
     @ApiResponse(responseCode = "200", description = "문제 조회 성공")
-    public List<ProblemResponseDto> getProblems(
+    public ProblemResponseDto getProblem(
             @AuthenticationPrincipal Member member,
-            @PathVariable("problemType") String problemType,
-            @PathVariable("problemCount") int problemCount
+            @PathVariable("problemType") String problemType
     ) {
-        return problemService.getProblemsByProblemType(member.getId(), problemType, problemCount);
+        return problemService.getProblemByProblemType(member.getId(), problemType);
     }
 
     @GetMapping("/hint/{problemId}")
