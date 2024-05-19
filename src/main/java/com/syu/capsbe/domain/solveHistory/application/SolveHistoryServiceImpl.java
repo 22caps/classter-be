@@ -47,7 +47,7 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
                 new SolveHistory(member, problemType, LocalDateTime.now())
         ); // SolveHistory 생성
 
-        return SolveHistorySetUpResponseDto.of(solveHistory.getId());
+        return SolveHistorySetUpResponseDto.of(solveHistory.getId(), request.getProblemCount());
     }
 
     @Override
