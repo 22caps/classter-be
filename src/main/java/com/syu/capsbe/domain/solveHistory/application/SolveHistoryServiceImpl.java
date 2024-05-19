@@ -67,7 +67,7 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
 
         checkSolverHistoryComplete(solveHistory, request.getProblemNumber(), request.getLastProblemNumber());
 
-        return SubmissionResponseDto.of(isCorrect);
+        return SubmissionResponseDto.of(isCorrect, problem.getAnswer());
     }
 
     private boolean isCorrectAnswer(String answer, String userAnswer) {
