@@ -80,7 +80,14 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
         if (solveHistory.getSolveHistoryDetailsSize() > lastProblemNumber)
             throw new IllegalArgumentException("문제 풀이가 이미 완료됐어야 하는 상태입니다.");
 
-        if (problemNumber == lastProblemNumber) solveHistory.completeSolveHistory();
+        if (problemNumber == lastProblemNumber) {
+            solveHistory.completeSolveHistory();
+            // 정답률 계산
+            double correctRate = solveHistory.getSolveHistoryDetails().stream()
+                    .filter(SolveHistoryDetail::isCorrect)
+                    .count() / (double) lastProblemNumber * 100;
+            solveHistory.updateCorrectRate(correctRate);
+        }
     }
 
     @Override
@@ -105,6 +112,10 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
             SolveHistoryResponseDto solveHistoryResponseDto = SolveHistoryResponseDto.builder()
                     .solveHistoryId(solveHistory.getId())
                     .solveHistoryDetail(solveHistoryDetailResponseList)
+                    .problemType(solveHistory.getProblemType())
+                    .correctRate(solveHistory.getCorrectRate())
+                    .solveDate(solveHistory.getSolveDate())
+                    .isReviewed(solveHistory.isReviewed())
                     .build();
 
             solveHistoryResponseDtoList.add(solveHistoryResponseDto);
