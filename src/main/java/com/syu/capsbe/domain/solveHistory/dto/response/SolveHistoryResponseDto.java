@@ -1,6 +1,8 @@
 package com.syu.capsbe.domain.solveHistory.dto.response;
 
+import com.syu.capsbe.domain.problem.ProblemType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +15,18 @@ public class SolveHistoryResponseDto {
 
     @Schema(description = "풀이 기록 번호 | 문제 리스트 번호", example = "3")
     private Long solveHistoryId;
+
+    @Schema(description = "문제 유형", example = "GRAMMAR")
+    private ProblemType problemType;
+
+    @Schema(description = "정답률", example = "33.0")
+    private double correctRate;
+
+    @Schema(description = "풀이 날짜", example = "2021-07-01T00:00:00")
+    private LocalDateTime solveDate;
+
+    @Schema(description = "복습 여부", example = "false")
+    private boolean isReviewed;
 
     @Schema(description = "풀이 세부 기록", example = "{\n"
             + "            \"solveHistoryId\": 19,\n"
@@ -169,8 +183,10 @@ public class SolveHistoryResponseDto {
     private List<SolveHistoryDetailResponse> solveHistoryDetail;
 
     @Builder
-    public static SolveHistoryResponseDto of(Long solveHistoryId,
+    public static SolveHistoryResponseDto of(Long solveHistoryId, ProblemType problemType,
+            double correctRate, LocalDateTime solveDate, boolean isReviewed,
             List<SolveHistoryDetailResponse> solveHistoryDetail) {
-        return new SolveHistoryResponseDto(solveHistoryId, solveHistoryDetail);
+        return new SolveHistoryResponseDto(solveHistoryId, problemType, correctRate, solveDate,
+                isReviewed, solveHistoryDetail);
     }
 }
