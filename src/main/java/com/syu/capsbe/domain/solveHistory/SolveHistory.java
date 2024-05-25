@@ -40,17 +40,30 @@ public class SolveHistory {
 
     private LocalDateTime solveDate;
 
+    private double correctRate;
+
     private boolean isCompleted;
+
+    private boolean isReviewed;
 
     @Builder
     public SolveHistory(Member member, ProblemType problemType, LocalDateTime solveDate) {
         this.member = member;
         this.problemType = problemType;
         this.solveDate = solveDate;
+        this.correctRate = 0;
+    }
+
+    public void updateCorrectRate(double correctRate) {
+        this.correctRate = Math.round(correctRate);
     }
 
     public void completeSolveHistory() {
         this.isCompleted = true;
+    }
+
+    public void reviewSolveHistory() {
+        this.isReviewed = true;
     }
 
     public int getSolveHistoryDetailsSize() {
