@@ -3,9 +3,11 @@ package com.syu.capsbe.domain.solveHistory.presentation;
 import com.syu.capsbe.domain.member.Member;
 import com.syu.capsbe.domain.solveHistory.application.SolveHistoryService;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistoryDetailRequestDto;
+import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistoryReviewRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistorySetUpRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.response.SolveHistoryDetailResponse;
 import com.syu.capsbe.domain.solveHistory.dto.response.SolveHistoryResponseDto;
+import com.syu.capsbe.domain.solveHistory.dto.response.SolveHistoryReviewResponseDto;
 import com.syu.capsbe.domain.solveHistory.dto.response.SolveHistorySetUpResponseDto;
 import com.syu.capsbe.domain.solveHistory.dto.response.SubmissionResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -62,5 +64,23 @@ public class SolveHistoryController {
             @AuthenticationPrincipal Member member,
             @PathVariable Long solveHistoryId) {
         return solveHistoryService.getHistoryDetails(member.getId(), solveHistoryId);
+    }
+
+    @PostMapping("/review/{solveHistoryId}")
+    @Operation(summary = "문제 풀이 복습", description = "문제 풀이 기록 번호를 통해 복습이 가능합니다. 풀이 완료인 문제 풀이 중 틀린 문제를 반환합니다.")
+    @ApiResponse(responseCode = "200", description = "문제 풀이 복습 성공")
+    @ApiResponse(responseCode = "E2001", description = "해당 문제 풀이 기록이 존재하지 않습니다.")
+    public List<SolveHistoryReviewResponseDto> reviewSolveHistory(
+            @AuthenticationPrincipal Member member,
+            @PathVariable Long solveHistoryId) {
+        return solveHistoryService.reviewSolveHistory(member.getId(), solveHistoryId);
+    }
+
+    @GetMapping("/review/submit")
+    @Operation(summary = "문제 복습 중 풀이 제출", description = "문제 복습 중 풀이를 제출합니다. 해당 정보는 저장되지 않고, 채점 결과만 반환하도록 합니다.")
+    @ApiResponse(responseCode = "200", description = "문제 복습 중 풀이 제출 성공")
+    public SubmissionResponseDto submitReviewSolveHistory(
+            @RequestBody SolveHistoryReviewRequestDto request) {
+        return solveHistoryService.submitReviewSolveHistory(request);
     }
 }
