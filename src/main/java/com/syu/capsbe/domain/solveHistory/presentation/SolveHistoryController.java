@@ -76,7 +76,7 @@ public class SolveHistoryController {
         return solveHistoryService.reviewSolveHistory(member.getId(), solveHistoryId);
     }
 
-    @GetMapping("/review/submit")
+    @PostMapping("/review/submit")
     @Operation(summary = "문제 복습 중 풀이 제출", description = "문제 복습 중 풀이를 제출합니다. 해당 정보는 저장되지 않고, 채점 결과만 반환하도록 합니다.")
     @ApiResponse(responseCode = "200", description = "문제 복습 중 풀이 제출 성공")
     public SubmissionResponseDto submitReviewSolveHistory(
