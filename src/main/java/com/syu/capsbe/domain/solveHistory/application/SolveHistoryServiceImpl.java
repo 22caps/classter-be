@@ -130,18 +130,20 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
     }
 
     private void checkSolverHistoryComplete(SolveHistory solveHistory, int problemNumber, int lastProblemNumber) {
-        // TODO: validate solveHistory
-
         if (solveHistory.getSolveHistoryDetailsSize() > lastProblemNumber)
             throw new IllegalArgumentException("문제 풀이가 이미 완료됐어야 하는 상태입니다.");
 
         if (problemNumber == lastProblemNumber) {
             solveHistory.completeSolveHistory();
-            // 정답률 계산
+
             double correctRate = solveHistory.getSolveHistoryDetails().stream()
                     .filter(SolveHistoryDetail::isCorrect)
                     .count() / (double) lastProblemNumber * 100;
             solveHistory.updateCorrectRate(correctRate);
+
+            if ((int) correctRate == 100) {
+                solveHistory.reviewSolveHistory();
+            }
         }
     }
 

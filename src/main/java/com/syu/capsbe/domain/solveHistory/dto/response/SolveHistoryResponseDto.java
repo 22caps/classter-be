@@ -1,5 +1,6 @@
 package com.syu.capsbe.domain.solveHistory.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.syu.capsbe.domain.problem.ProblemType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
@@ -22,7 +23,8 @@ public class SolveHistoryResponseDto {
     @Schema(description = "정답률", example = "33.0")
     private double correctRate;
 
-    @Schema(description = "풀이 날짜", example = "2021-07-01T00:00:00")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
+    @Schema(description = "풀이 날짜", example = "2024-05-29T00:00:00")
     private LocalDateTime solveDate;
 
     @Schema(description = "복습 여부", example = "false")
