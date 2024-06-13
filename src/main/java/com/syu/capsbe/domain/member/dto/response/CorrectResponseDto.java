@@ -17,5 +17,4 @@ public class CorrectResponseDto {
 
     private LocalDate solveDate;
     private String accuracyRate;
-    private String day;
 }

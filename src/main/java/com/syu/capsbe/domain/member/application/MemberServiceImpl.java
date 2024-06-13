@@ -81,7 +81,7 @@ public class MemberServiceImpl implements MemberService {
         for (int i = 0; i < 7; i++) {
             LocalDate date = now.minusDays(i);
             rateMap.put(date,
-                    new CorrectResponseDto(date, "0.00", date.getDayOfWeek().toString()));
+                    new CorrectResponseDto(date, "0.00"));
         }
 
         List<Object[]> results = memberRepository.findWeeklyPercentCorrect(memberId);
@@ -89,11 +89,9 @@ public class MemberServiceImpl implements MemberService {
             Double accuracyRate = Double.parseDouble(String.valueOf(result[0]));
             Date solveDate = (Date) result[1];
             LocalDate localSolveDate = LocalDate.parse(solveDate.toString());
-            String dayOfWeek = (String) result[2];
 
             if (rateMap.containsKey(localSolveDate)) {
                 rateMap.get(localSolveDate).setAccuracyRate(String.format("%.2f", accuracyRate));
-                rateMap.get(localSolveDate).setDay(dayOfWeek);
             }
         }
 
