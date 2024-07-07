@@ -1,10 +1,12 @@
-# 클래스터
+# 클래스터, 클래스팅 산학협력 캡스톤 프로젝트
 
-## 클래스팅 산학 협력 캡스톤 프로젝트
+<div align="center">
+  <img src="https://github.com/22caps/classter-be/assets/87390396/10383073-4bcb-4897-a1a4-d54a488ba046" alt="클래스터 로고_natural_resized" />
+</div>
 
----
+<br>
 
-## 개요
+## Overview
 
 클래스터
 
@@ -12,8 +14,7 @@ LLM을 활용한 영어 교육 서비스
  
 TODO: ppt 이미지 삽입
 
-
----
+<br>
 
 ## API Spec
 
@@ -28,8 +29,9 @@ TODO: ppt 이미지 삽입
 | SolveHistory       | 문제 풀이 기록       |
 | SolveHistoryDetail | 문제 풀이 세부 기록    |
 
+<br>
 
----
+## Flow Chart
 
 ## 기술 스택 & 도구
 TODO: 이미지를 통해 깔끔하게 디자인
