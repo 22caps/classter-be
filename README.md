@@ -12,6 +12,7 @@
 
 LLM을 통해 생성된 토익 문제를 풀고, LLM을 통해 모르는 문제를 질문할 수 있는 서비스
 
+<img width="800" alt="0a391563ea3bb1e4ff657f1cc3d79b23" src="https://github.com/22caps/classter-be/assets/87390396/56ecea8b-7fa5-4c8e-aefc-21770ac7984c">
 
 
 <br>
