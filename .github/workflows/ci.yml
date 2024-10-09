@@ -59,8 +59,10 @@ jobs:
         with:
           files: build/test-results/**/*.xml
 
-      - name: Create directories for OpenAPI YAML
+      - name: Create directories and write OpenAPI YAML
         run: |
           mkdir -p ./src/main/static/.well-known/resources
-          echo "${{ secrets.OPENAPI_YAML }}" > ./src/main/static/.well-known/resources/openapi.yaml
+          cat <<EOF > ./src/main/static/.well-known/resources/openapi.yaml
+          ${{ secrets.OPENAPI_YAML }}
+          EOF
         shell: bash
