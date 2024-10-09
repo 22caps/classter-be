@@ -1,0 +1,18 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Classter API Plugin",
+  "name_for_model": "classter_plugin",
+  "description_for_human": "Access Classter services via APIs.",
+  "description_for_model": "Use this plugin to retrieve data from Classter's APIs such as users, courses, and student information.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://classter.site/.well-known/openapi.yaml",
+    "has_user_authentication": false
+  },
+  "logo_url": "https://classter.site/logo.png",
+  "contact_email": "support@classter.site",
+  "legal_info_url": "https://classter.site/legal"
+}
