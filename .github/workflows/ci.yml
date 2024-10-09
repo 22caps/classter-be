@@ -63,5 +63,5 @@ jobs:
         env:
           OPENAPI_YAML: ${{ secrets.OPENAPI_YAML }}
         run: |
-          echo "$OPENAPI_YAML" > ./src/test/resources/openapi.yaml
+          echo "$OPENAPI_YAML" > ./src/main/static/.well-known/resources/openapi.yaml
         shell: bash
