@@ -11,4 +11,6 @@ public interface ProblemService {
     ProblemHintResponseDto getHintByQuestion(Long problemId);
 
     Problem getProblemById(Long problemId);
+
+    ProblemResponseDto getGrammarProblem();
 }

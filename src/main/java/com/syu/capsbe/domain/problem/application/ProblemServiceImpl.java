@@ -45,4 +45,13 @@ public class ProblemServiceImpl implements ProblemService {
                 .orElseThrow(
                         () -> ProblemExistsException.of(ProblemErrorCode.PROBLEM_IS_NOT_EXISTS));
     }
+
+    @Override
+    public ProblemResponseDto getGrammarProblem() {
+        return ProblemResponseDto.of(
+                problemRepository.getProblemByProblemType(ProblemType.GRAMMAR)
+                        .orElseThrow(
+                                () -> ProblemExistsException.of(
+                                        ProblemErrorCode.PROBLEM_IS_NOT_EXISTS)));
+    }
 }

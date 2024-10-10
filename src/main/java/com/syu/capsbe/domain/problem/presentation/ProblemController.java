@@ -39,4 +39,12 @@ public class ProblemController {
     public ProblemHintResponseDto getHint(@PathVariable("problemId") Long problemId) {
         return problemService.getHintByQuestion(problemId);
     }
+
+    @GetMapping("/grammar}")
+    @Operation(summary = "문법 문제 조회", description = "gpt 플러그인용 테스트 API")
+    @ApiResponse(responseCode = "200", description = "문제 조회 성공")
+    public ProblemResponseDto getProblem(
+    ) {
+        return problemService.getGrammarProblem();
+    }
 }
