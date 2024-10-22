@@ -16,17 +16,19 @@ import org.springframework.web.filter.GenericFilterBean;
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final String TOKEN_PREFIX = "Bearer";
-    private final JwtProvider jwtTokenProvider;
+    private static final String TOKEN_PREFIX = "Bearer ";
+    private final JwtProvider jwtProvider;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         String token = resolveToken((HttpServletRequest) request);
 
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            Authentication authentication = jwtTokenProvider.getAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (token != null && jwtProvider.validateToken(token)) {
+            Authentication authentication = jwtProvider.getAuthentication(token);
+            if (authentication != null) {
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
 
         chain.doFilter(request, response);
@@ -36,7 +38,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
 
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(TOKEN_PREFIX)) {
-            return bearerToken.substring(7);
+            return bearerToken.substring(TOKEN_PREFIX.length());
         }
 
         return null;

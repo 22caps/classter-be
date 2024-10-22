@@ -49,6 +49,18 @@ dependencies {
     // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+
+    // auth0
+    implementation group: 'com.auth0', name: 'java-jwt', version: '3.18.2'
+    // https://mvnrepository.com/artifact/com.auth0/auth0-spring-security-api
+    implementation 'com.auth0:auth0-spring-security-api:1.5.3'
+
+    // import javax.servlet.http.*;
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
+
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:3.2.4'
+    implementation 'org.springframework.security:spring-security-oauth2-client:6.2.3'
+
 }
 
 tasks.named('test') {
