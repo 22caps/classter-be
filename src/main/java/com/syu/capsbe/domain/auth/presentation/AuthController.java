@@ -55,12 +55,4 @@ public class AuthController {
     public SignInResponseDto signIn(@RequestBody @Valid SignInRequestDto signInRequestDto) {
         return this.authService.signIn(signInRequestDto);
     }
-
-    @GetMapping("/test")
-    @Operation(summary = "테스트", description = "인증된 사용자만 접근 가능한 테스트 API")
-    @ApiResponse(responseCode = "200", description = "테스트 성공")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public Map<String, String> hello(@AuthenticationPrincipal Member member) {
-        return Map.of("email", member.getEmail().getEmail());
-    }
 }
