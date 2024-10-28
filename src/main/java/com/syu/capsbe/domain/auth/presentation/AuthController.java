@@ -1,6 +1,7 @@
 package com.syu.capsbe.domain.auth.presentation;
 
 import com.syu.capsbe.domain.auth.application.AuthService;
+import com.syu.capsbe.domain.auth.dto.request.SignInEmailRequestDto;
 import com.syu.capsbe.domain.auth.dto.request.SignInRequestDto;
 import com.syu.capsbe.domain.auth.dto.request.SignUpRequestDto;
 import com.syu.capsbe.domain.auth.dto.response.SignInResponseDto;
@@ -37,6 +38,14 @@ public class AuthController {
     @ApiResponse(responseCode = "E1003", description = "이미 존재하는 회원입니다.", content = @Content)
     public SignUpResponseDto signUp(@RequestBody @Valid SignUpRequestDto signUpRequestDto) {
         return this.authService.signUp(signUpRequestDto);
+    }
+
+    @PostMapping("/sign-in-email")
+    @Operation(summary = "로그인", description = "Email을 통해 로그인을 진행합니다.")
+    @ApiResponse(responseCode = "200", description = "로그인 성공")
+    @ApiResponse(responseCode = "E1002", description = "존재하지 않는 회원입니다.", content = @Content)
+    public SignInResponseDto signInWithEmail(@RequestBody @Valid SignInEmailRequestDto signInRequestDto) {
+        return this.authService.signInWithEmail(signInRequestDto);
     }
 
     @PostMapping("/sign-in")

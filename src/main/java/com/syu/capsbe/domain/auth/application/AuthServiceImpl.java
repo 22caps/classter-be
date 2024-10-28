@@ -1,5 +1,6 @@
 package com.syu.capsbe.domain.auth.application;
 
+import com.syu.capsbe.domain.auth.dto.request.SignInEmailRequestDto;
 import com.syu.capsbe.domain.auth.dto.request.SignInRequestDto;
 import com.syu.capsbe.domain.auth.dto.request.SignUpRequestDto;
 import com.syu.capsbe.domain.auth.dto.response.SignInResponseDto;
@@ -42,6 +43,16 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public SignInResponseDto signIn(SignInRequestDto signInRequestDto) {
         Member member = memberService.findByUuid(signInRequestDto.getUuid());
+
+        JwtResponseDto jwtResponseDto = jwtProvider.generateToken(member.getUsername(),
+                member.getRoles());
+
+        return SignInResponseDto.of(jwtResponseDto.getAccessToken(), jwtResponseDto.getExpiresAt());
+    }
+
+    @Override
+    public SignInResponseDto signInWithEmail(SignInEmailRequestDto signInRequestDto) {
+        Member member = memberService.findByEmail(signInRequestDto.getEmail());
 
         JwtResponseDto jwtResponseDto = jwtProvider.generateToken(member.getUsername(),
                 member.getRoles());
