@@ -86,6 +86,16 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
     }
 
     @Override
+    public SubmissionResponseDto submitPluginSolveHistory(SolveHistoryDetailRequestDto request) {
+        Problem problem = problemRepository.findById(request.getProblemId())
+                .orElseThrow(() -> ProblemExistsException.of(ProblemErrorCode.PROBLEM_IS_NOT_EXISTS));
+
+        boolean isCorrect = isCorrectAnswer(problem.getAnswer(), request.getUserAnswer());
+
+        return SubmissionResponseDto.of(isCorrect, problem.getAnswer());
+    }
+
+    @Override
     public List<SolveHistoryResponseDto> getHistoryList(Long memberId) {
         return convertSolveHistoryEntityToDto(solveHistoryRepository.findByMemberIdAndIsCompletedIsTrue(memberId));
     }

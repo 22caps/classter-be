@@ -26,4 +26,6 @@ public interface SolveHistoryService {
     List<SolveHistoryReviewResponseDto> reviewSolveHistory(Long id, Long solveHistoryId);
 
     SubmissionResponseDto submitReviewSolveHistory(SolveHistoryReviewRequestDto request);
+
+    SubmissionResponseDto submitPluginSolveHistory(SolveHistoryDetailRequestDto request);
 }
