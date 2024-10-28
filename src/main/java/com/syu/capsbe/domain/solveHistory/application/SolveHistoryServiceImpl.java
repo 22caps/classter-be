@@ -13,6 +13,7 @@ import com.syu.capsbe.domain.solveHistory.SolveHistoryDetailRepository;
 import com.syu.capsbe.domain.solveHistory.SolveHistoryRepository;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistoryDetailRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistoryReviewRequestDto;
+import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistorySetUpEmailRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistorySetUpRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.response.SolveHistoryDetailResponse;
 import com.syu.capsbe.domain.solveHistory.dto.response.SolveHistoryResponseDto;
@@ -47,6 +48,18 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
 
         SolveHistory solveHistory = solveHistoryRepository.save(
                 new SolveHistory(member, problemType, LocalDateTime.now())
+        ); // SolveHistory 생성
+
+        return SolveHistorySetUpResponseDto.of(solveHistory.getId(), request.getProblemCount());
+    }
+
+    @Override
+    public SolveHistorySetUpResponseDto setSolveHistoryWithEmail(
+            SolveHistorySetUpEmailRequestDto request) {
+        Member member = memberService.findByEmail(request.getEmail());
+
+        SolveHistory solveHistory = solveHistoryRepository.save(
+                new SolveHistory(member, ProblemType.valueOf(request.getProblemType()), LocalDateTime.now())
         ); // SolveHistory 생성
 
         return SolveHistorySetUpResponseDto.of(solveHistory.getId(), request.getProblemCount());
