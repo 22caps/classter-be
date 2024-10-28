@@ -2,6 +2,7 @@ package com.syu.capsbe.domain.solveHistory.application;
 
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistoryDetailRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistoryReviewRequestDto;
+import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistorySetUpEmailRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistorySetUpRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.response.SolveHistoryDetailResponse;
 import com.syu.capsbe.domain.solveHistory.dto.response.SolveHistoryResponseDto;
@@ -13,6 +14,8 @@ import java.util.List;
 public interface SolveHistoryService {
 
     SolveHistorySetUpResponseDto setSolveHistory(SolveHistorySetUpRequestDto request, Long memberId);
+
+    SolveHistorySetUpResponseDto setSolveHistoryWithEmail(SolveHistorySetUpEmailRequestDto request);
 
     SubmissionResponseDto submitSolveHistory(SolveHistoryDetailRequestDto request, Long memberId);
 

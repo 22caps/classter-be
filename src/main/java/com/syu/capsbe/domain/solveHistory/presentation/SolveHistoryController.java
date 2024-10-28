@@ -4,6 +4,7 @@ import com.syu.capsbe.domain.member.Member;
 import com.syu.capsbe.domain.solveHistory.application.SolveHistoryService;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistoryDetailRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistoryReviewRequestDto;
+import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistorySetUpEmailRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistorySetUpRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.response.SolveHistoryDetailResponse;
 import com.syu.capsbe.domain.solveHistory.dto.response.SolveHistoryResponseDto;
@@ -38,6 +39,14 @@ public class SolveHistoryController {
             @AuthenticationPrincipal Member member,
             @RequestBody SolveHistorySetUpRequestDto request) {
         return solveHistoryService.setSolveHistory(request, member.getId());
+    }
+
+    @PostMapping("/start-with-email")
+    @Operation(summary = "문제 풀이 시작", description = "문제 풀이를 시작합니다. 문제 풀이 시작 시 사용자의 문제 풀이 기록을 생성합니다.")
+    @ApiResponse(responseCode = "200", description = "문제 풀이 시작 성공")
+    public SolveHistorySetUpResponseDto startSolveHistory(
+            @RequestBody SolveHistorySetUpEmailRequestDto request) {
+        return solveHistoryService.setSolveHistoryWithEmail(request);
     }
 
     @PostMapping("/submit")
