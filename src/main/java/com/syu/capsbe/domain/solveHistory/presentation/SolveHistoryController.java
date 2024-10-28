@@ -58,6 +58,14 @@ public class SolveHistoryController {
         return solveHistoryService.submitSolveHistory(request, member.getId());
     }
 
+    @GetMapping("/plugin-submit")
+    @Operation(summary = "문제 풀이 기록 제출", description = "문제 풀이 기록을 제출합니다. 사용자는 모든 문제를 푼 후에 제출할 수 있습니다.")
+    @ApiResponse(responseCode = "200", description = "문제 풀이 기록 제출 성공")
+    public SubmissionResponseDto submitSolveHistory(
+            @RequestBody SolveHistoryDetailRequestDto request) {
+        return solveHistoryService.submitPluginSolveHistory(request);
+    }
+
     @GetMapping("/list")
     @Operation(summary = "문제 풀이 기록 전체 조회", description = "사용자의 문제 풀이 기록을 조회합니다. 풀이 완료가 된 문제들만 조회 가능합니다.")
     @ApiResponse(responseCode = "200", description = "문제 풀이 기록 전체 조회 성공")
