@@ -26,10 +26,9 @@ public class ProblemController {
     @Operation(summary = "문제 조회", description = "문제 유형을 통해 문제를 조회합니다. 해당 요청은 문제 풀이 시마다 호출됩니다.")
     @ApiResponse(responseCode = "200", description = "문제 조회 성공")
     public ProblemResponseDto getProblem(
-            @AuthenticationPrincipal Member member,
             @PathVariable("problemType") String problemType
     ) {
-        return problemService.getProblemByProblemType(member.getId(), problemType);
+        return problemService.getProblemByProblemType(problemType);
     }
 
     @GetMapping("/hint/{problemId}")

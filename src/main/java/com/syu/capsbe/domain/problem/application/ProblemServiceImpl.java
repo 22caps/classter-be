@@ -22,7 +22,7 @@ public class ProblemServiceImpl implements ProblemService {
     private final PromptService promptService;
 
     @Override
-    public ProblemResponseDto getProblemByProblemType(Long memberId, String problemTypeRequest) {
+    public ProblemResponseDto getProblemByProblemType(String problemTypeRequest) {
         return ProblemResponseDto.of(
                 problemRepository.getProblemByProblemType(ProblemType.valueOf(problemTypeRequest))
                         .orElseThrow(
