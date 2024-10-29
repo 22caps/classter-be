@@ -22,6 +22,14 @@ public class ProblemController {
 
     private final ProblemService problemService;
 
+    @GetMapping("/random")
+    @Operation(summary = "랜덤 문제 조회", description = "문제 유형을 통해 랜덤 문제를 조회합니다. 해당 요청은 문제 풀이 시마다 호출됩니다.")
+    @ApiResponse(responseCode = "200", description = "문제 조회 성공")
+    public ProblemResponseDto getRandomProblem() {
+        return problemService.getRandomProblem();
+    }
+
+
     @GetMapping("/{problemType}")
     @Operation(summary = "문제 조회", description = "문제 유형을 통해 문제를 조회합니다. 해당 요청은 문제 풀이 시마다 호출됩니다.")
     @ApiResponse(responseCode = "200", description = "문제 조회 성공")

@@ -22,6 +22,15 @@ public class ProblemServiceImpl implements ProblemService {
     private final PromptService promptService;
 
     @Override
+    public ProblemResponseDto getRandomProblem() {
+        return ProblemResponseDto.of(
+                problemRepository.getRandomProblem()
+                        .orElseThrow(
+                                () -> ProblemExistsException.of(
+                                        ProblemErrorCode.PROBLEM_IS_NOT_EXISTS)));
+    }
+
+    @Override
     public ProblemResponseDto getProblemByProblemType(String problemTypeRequest) {
         return ProblemResponseDto.of(
                 problemRepository.getProblemByProblemType(ProblemType.valueOf(problemTypeRequest))
