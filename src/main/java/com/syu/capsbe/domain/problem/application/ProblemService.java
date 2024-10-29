@@ -6,6 +6,8 @@ import com.syu.capsbe.domain.problem.dto.response.ProblemResponseDto;
 
 public interface ProblemService {
 
+    ProblemResponseDto getRandomProblem();
+
     ProblemResponseDto getProblemByProblemType(String problemTypeRequest);
 
     ProblemHintResponseDto getHintByQuestion(Long problemId);

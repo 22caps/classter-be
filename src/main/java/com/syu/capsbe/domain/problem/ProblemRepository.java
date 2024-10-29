@@ -8,6 +8,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProblemRepository extends JpaRepository<Problem, Long> {
 
+    @Query("SELECT p FROM Problem p ORDER BY RAND() LIMIT 1")
+    Optional<Problem> getRandomProblem();
+
     @Query("SELECT p FROM Problem p WHERE p.problemType = :problemType ORDER BY RAND() LIMIT 1")
     Optional<Problem> getProblemByProblemType(ProblemType problemType);
 
