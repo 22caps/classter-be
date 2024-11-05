@@ -1,6 +1,7 @@
 package com.syu.capsbe.domain.auth.application;
 
 import com.syu.capsbe.domain.auth.dto.request.SignInEmailRequestDto;
+import com.syu.capsbe.domain.auth.dto.response.SignInEmailResponseDto;
 import com.syu.capsbe.domain.auth.dto.request.SignInRequestDto;
 import com.syu.capsbe.domain.auth.dto.request.SignUpRequestDto;
 import com.syu.capsbe.domain.auth.dto.response.SignInResponseDto;
@@ -9,6 +10,7 @@ import com.syu.capsbe.domain.member.Member;
 import com.syu.capsbe.domain.member.application.MemberService;
 import com.syu.capsbe.global.jwt.JwtProvider;
 import com.syu.capsbe.global.jwt.dto.JwtResponseDto;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,12 +53,21 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public SignInResponseDto signInWithEmail(SignInEmailRequestDto signInRequestDto) {
-        Member member = memberService.findByEmail(signInRequestDto.getEmail());
+    @Transactional
+    public SignInEmailResponseDto signInWithEmail(SignInEmailRequestDto signInRequestDto) {
+        Optional<Member> findMember = memberService.findByEmail(signInRequestDto.getEmail());
 
-        JwtResponseDto jwtResponseDto = jwtProvider.generateToken(member.getUsername(),
-                member.getRoles());
+        // member 없을 시 회원가입 후 반환
+        // 있을 경우 그냥 반환
 
-        return SignInResponseDto.of(jwtResponseDto.getAccessToken(), jwtResponseDto.getExpiresAt());
+        if (findMember.isEmpty()) {
+            Member member = Member.builder()
+                    .email(signInRequestDto.getEmail())
+                    .build();
+
+            memberService.save(member);
+        }
+
+        return SignInEmailResponseDto.of(signInRequestDto.getEmail());
     }
 }

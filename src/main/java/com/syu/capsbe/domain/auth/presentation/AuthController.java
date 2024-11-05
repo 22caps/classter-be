@@ -2,21 +2,17 @@ package com.syu.capsbe.domain.auth.presentation;
 
 import com.syu.capsbe.domain.auth.application.AuthService;
 import com.syu.capsbe.domain.auth.dto.request.SignInEmailRequestDto;
+import com.syu.capsbe.domain.auth.dto.response.SignInEmailResponseDto;
 import com.syu.capsbe.domain.auth.dto.request.SignInRequestDto;
 import com.syu.capsbe.domain.auth.dto.request.SignUpRequestDto;
 import com.syu.capsbe.domain.auth.dto.response.SignInResponseDto;
 import com.syu.capsbe.domain.auth.dto.response.SignUpResponseDto;
-import com.syu.capsbe.domain.member.Member;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,10 +37,10 @@ public class AuthController {
     }
 
     @PostMapping("/sign-in-email")
-    @Operation(summary = "로그인", description = "Email을 통해 로그인을 진행합니다.")
+    @Operation(summary = "로그인", description = "Email을 통해 로그인을 진행합니다. 존재하지 않는 회원일 경우 회원가입 후 로그인을 진행합니다.")
     @ApiResponse(responseCode = "200", description = "로그인 성공")
     @ApiResponse(responseCode = "E1002", description = "존재하지 않는 회원입니다.", content = @Content)
-    public SignInResponseDto signInWithEmail(@RequestBody @Valid SignInEmailRequestDto signInRequestDto) {
+    public SignInEmailResponseDto signInWithEmail(@RequestBody @Valid SignInEmailRequestDto signInRequestDto) {
         return this.authService.signInWithEmail(signInRequestDto);
     }
 
