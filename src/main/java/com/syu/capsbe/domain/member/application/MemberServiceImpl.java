@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -53,9 +54,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member findByEmail(String email) {
-        return memberRepository.findByEmail(new EmailVo(email))
-                .orElseThrow(() -> MemberExistsException.of(MemberErrorCode.MEMBER_IS_NOT_EXIST));
+    public Optional<Member> findByEmail(String email) {
+        return Optional.ofNullable(memberRepository.findByEmail(new EmailVo(email))
+                .orElseThrow(() -> MemberExistsException.of(MemberErrorCode.MEMBER_IS_NOT_EXIST)));
     }
 
     @Override

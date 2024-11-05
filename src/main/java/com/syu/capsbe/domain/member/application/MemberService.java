@@ -5,6 +5,7 @@ import com.syu.capsbe.domain.member.dto.request.MemberUpdateRequestDto;
 import com.syu.capsbe.domain.member.dto.response.CorrectResponseDto;
 import com.syu.capsbe.domain.member.dto.response.MemberInfoResponseDto;
 import java.util.List;
+import java.util.Optional;
 
 public interface MemberService {
 
@@ -16,7 +17,7 @@ public interface MemberService {
 
     Member findByUuid(String uuid);
 
-    Member findByEmail(String email);
+    Optional<Member> findByEmail(String email);
 
     MemberInfoResponseDto getMemberInfo(Long memberId);
 

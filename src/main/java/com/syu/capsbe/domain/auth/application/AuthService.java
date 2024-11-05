@@ -1,6 +1,7 @@
 package com.syu.capsbe.domain.auth.application;
 
 import com.syu.capsbe.domain.auth.dto.request.SignInEmailRequestDto;
+import com.syu.capsbe.domain.auth.dto.response.SignInEmailResponseDto;
 import com.syu.capsbe.domain.auth.dto.request.SignInRequestDto;
 import com.syu.capsbe.domain.auth.dto.request.SignUpRequestDto;
 import com.syu.capsbe.domain.auth.dto.response.SignInResponseDto;
@@ -12,5 +13,5 @@ public interface AuthService {
 
     SignInResponseDto signIn(SignInRequestDto signInRequestDto);
 
-    SignInResponseDto signInWithEmail(SignInEmailRequestDto signInRequestDto);
+    SignInEmailResponseDto signInWithEmail(SignInEmailRequestDto signInRequestDto);
 }

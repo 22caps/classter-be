@@ -56,7 +56,7 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
     @Override
     public SolveHistorySetUpResponseDto setSolveHistoryWithEmail(
             SolveHistorySetUpEmailRequestDto request) {
-        Member member = memberService.findByEmail(request.getEmail());
+        Member member = memberService.findByEmail(request.getEmail()).orElseThrow();
 
         SolveHistory solveHistory = solveHistoryRepository.save(
                 new SolveHistory(member, ProblemType.valueOf(request.getProblemType()), LocalDateTime.now())
