@@ -7,10 +7,13 @@ import com.syu.capsbe.domain.problem.ProblemRepository;
 import com.syu.capsbe.domain.problem.ProblemType;
 import com.syu.capsbe.domain.problem.exception.ProblemExistsException;
 import com.syu.capsbe.domain.problem.exception.common.ProblemErrorCode;
+import com.syu.capsbe.domain.solveHistory.PluginSolveHistory;
+import com.syu.capsbe.domain.solveHistory.PluginSolveHistoryRepository;
 import com.syu.capsbe.domain.solveHistory.SolveHistory;
 import com.syu.capsbe.domain.solveHistory.SolveHistoryDetail;
 import com.syu.capsbe.domain.solveHistory.SolveHistoryDetailRepository;
 import com.syu.capsbe.domain.solveHistory.SolveHistoryRepository;
+import com.syu.capsbe.domain.solveHistory.dto.request.PluginSolveHistoryDetailRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistoryDetailRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistoryReviewRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistorySetUpEmailRequestDto;
@@ -26,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +42,7 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
     private final ProblemRepository problemRepository;
     private final SolveHistoryRepository solveHistoryRepository;
     private final SolveHistoryDetailRepository solveHistoryDetailRepository;
+    private final PluginSolveHistoryRepository pluginSolveHistoryRepository;
 
     @Override
     @Transactional
@@ -86,13 +91,14 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
     }
 
     @Override
-    public SubmissionResponseDto submitPluginSolveHistory(SolveHistoryDetailRequestDto request) {
-        Problem problem = problemRepository.findById(request.getProblemId())
-                .orElseThrow(() -> ProblemExistsException.of(ProblemErrorCode.PROBLEM_IS_NOT_EXISTS));
+    @Transactional
+    public void submitPluginSolveHistory(PluginSolveHistoryDetailRequestDto request) {
+        Member member = memberService.findByEmail(request.getEmail()).get();
 
-        boolean isCorrect = isCorrectAnswer(problem.getAnswer(), request.getUserAnswer());
+        pluginSolveHistoryRepository.save(
+                new PluginSolveHistory(member, request.isCorrect())
+        );
 
-        return SubmissionResponseDto.of(isCorrect, problem.getAnswer());
     }
 
     @Override
