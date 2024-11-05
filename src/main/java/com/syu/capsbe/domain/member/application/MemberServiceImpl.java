@@ -55,8 +55,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Optional<Member> findByEmail(String email) {
-        return Optional.ofNullable(memberRepository.findByEmail(new EmailVo(email))
-                .orElseThrow(() -> MemberExistsException.of(MemberErrorCode.MEMBER_IS_NOT_EXIST)));
+        return memberRepository.findByEmail(new EmailVo(email));
     }
 
     @Override
