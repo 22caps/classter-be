@@ -2,6 +2,7 @@ package com.syu.capsbe.domain.solveHistory.presentation;
 
 import com.syu.capsbe.domain.member.Member;
 import com.syu.capsbe.domain.solveHistory.application.SolveHistoryService;
+import com.syu.capsbe.domain.solveHistory.dto.request.PluginSolveHistoryDetailRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistoryDetailRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistoryReviewRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistorySetUpEmailRequestDto;
@@ -58,12 +59,12 @@ public class SolveHistoryController {
         return solveHistoryService.submitSolveHistory(request, member.getId());
     }
 
-    @GetMapping("/plugin-submit")
-    @Operation(summary = "문제 풀이 기록 제출", description = "문제 풀이 기록을 제출합니다. 사용자는 모든 문제를 푼 후에 제출할 수 있습니다.")
-    @ApiResponse(responseCode = "200", description = "문제 풀이 기록 제출 성공")
-    public SubmissionResponseDto submitSolveHistory(
-            @RequestBody SolveHistoryDetailRequestDto request) {
-        return solveHistoryService.submitPluginSolveHistory(request);
+    @PostMapping("/plugin-submit")
+    @Operation(summary = "플러그인 문제 풀이 정답 여부 제출", description = "플러그인으로 풀이한 문제의 정답 여부를 제출합니다.")
+    @ApiResponse(responseCode = "200", description = "정답 제출 완료")
+    public void submitSolveHistory(
+            @RequestBody PluginSolveHistoryDetailRequestDto request) {
+        solveHistoryService.submitPluginSolveHistory(request);
     }
 
     @GetMapping("/list")

@@ -1,5 +1,6 @@
 package com.syu.capsbe.domain.solveHistory.application;
 
+import com.syu.capsbe.domain.solveHistory.dto.request.PluginSolveHistoryDetailRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistoryDetailRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistoryReviewRequestDto;
 import com.syu.capsbe.domain.solveHistory.dto.request.SolveHistorySetUpEmailRequestDto;
@@ -27,5 +28,5 @@ public interface SolveHistoryService {
 
     SubmissionResponseDto submitReviewSolveHistory(SolveHistoryReviewRequestDto request);
 
-    SubmissionResponseDto submitPluginSolveHistory(SolveHistoryDetailRequestDto request);
+    void submitPluginSolveHistory(PluginSolveHistoryDetailRequestDto request);
 }
