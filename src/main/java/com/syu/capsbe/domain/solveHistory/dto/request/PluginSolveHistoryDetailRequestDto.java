@@ -12,6 +12,9 @@ public class PluginSolveHistoryDetailRequestDto {
     @Schema(description = "유저 이메일", example = "abc@test.com")
     private String email;
 
+    @Schema(description = "문제 타입", example = "GRAMMAR")
+    private String problemType;
+
     @Schema(description = "정답 여부", example = "true")
     private boolean isCorrect;
 }

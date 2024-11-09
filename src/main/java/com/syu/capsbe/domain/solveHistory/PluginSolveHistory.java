@@ -1,7 +1,10 @@
 package com.syu.capsbe.domain.solveHistory;
 
 import com.syu.capsbe.domain.member.Member;
+import com.syu.capsbe.domain.problem.ProblemType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,11 +31,15 @@ public class PluginSolveHistory {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    @Enumerated(value = EnumType.STRING)
+    private ProblemType problemType;
+
     private boolean isCorrect;
 
     @Builder
-    public PluginSolveHistory(Member member, boolean isCorrect) {
+    public PluginSolveHistory(Member member, ProblemType problemType, boolean isCorrect) {
         this.member = member;
-        this.isCorrect = false;
+        this.problemType = problemType;
+        this.isCorrect = isCorrect;
     }
 }
