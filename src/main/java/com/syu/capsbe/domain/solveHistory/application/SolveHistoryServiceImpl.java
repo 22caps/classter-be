@@ -96,7 +96,7 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
         Member member = memberService.findByEmail(request.getEmail()).get();
 
         pluginSolveHistoryRepository.save(
-                new PluginSolveHistory(member, request.isCorrect())
+                new PluginSolveHistory(member, ProblemType.valueOf(request.getProblemType()), request.isCorrect())
         );
 
     }
