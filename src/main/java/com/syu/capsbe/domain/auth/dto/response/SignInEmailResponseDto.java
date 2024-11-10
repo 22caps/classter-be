@@ -7,15 +7,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Schema(description = "로그인 요청 정보")
+@Schema(description = "로그인 응답 정보, 사용자의 정답률 정보를 반환하도록")
 @AllArgsConstructor
 @NoArgsConstructor
 public class SignInEmailResponseDto {
 
-    @Schema(description = "회원 Email", example = "abc@test.com")
-    private String email;
+    // WORD, CONVERSATION, GRAMMAR 정답률 정보
+    @Schema(description = "문법 문제 정답률", example = "0.5")
+    private double grammarCorrectRate;
 
-    public static SignInEmailResponseDto of(String email) {
-        return new SignInEmailResponseDto(email);
+    @Schema(description = "회화 문제 정답률", example = "0.5")
+    private double conversationCorrectRate;
+
+    @Schema(description = "단어 문제 정답률", example = "0.5")
+    private double wordCorrectRate;
+
+    public static SignInEmailResponseDto of(double grammarCorrectRate, double conversationCorrectRate, double wordCorrectRate) {
+        return new SignInEmailResponseDto(grammarCorrectRate, conversationCorrectRate, wordCorrectRate);
     }
 }
