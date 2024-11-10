@@ -16,5 +16,5 @@ public class PluginSolveHistoryDetailRequestDto {
     private String problemType;
 
     @Schema(description = "정답 여부", example = "true")
-    private boolean isCorrect;
+    private boolean correct;
 }
