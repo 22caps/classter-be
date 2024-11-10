@@ -29,10 +29,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -94,6 +96,8 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
     @Transactional
     public void submitPluginSolveHistory(PluginSolveHistoryDetailRequestDto request) {
         Member member = memberService.findByEmail(request.getEmail()).get();
+
+        log.info("정답 야부: {}", request.isCorrect());
 
         pluginSolveHistoryRepository.save(
                 new PluginSolveHistory(member, ProblemType.valueOf(request.getProblemType()), request.isCorrect())
