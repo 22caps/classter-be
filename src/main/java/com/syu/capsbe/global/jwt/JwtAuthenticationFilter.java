@@ -16,7 +16,7 @@ import org.springframework.web.filter.GenericFilterBean;
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final String TOKEN_PREFIX = "Bearer ";
+    private static final String TOKEN_PREFIX = "Bearer";
     private final JwtProvider jwtProvider;
 
     @Override
@@ -26,19 +26,17 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
         if (token != null && jwtProvider.validateToken(token)) {
             Authentication authentication = jwtProvider.getAuthentication(token);
-            if (authentication != null) {
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-        }
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        chain.doFilter(request, response);
+            chain.doFilter(request, response);
+        }
     }
 
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
 
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(TOKEN_PREFIX)) {
-            return bearerToken.substring(TOKEN_PREFIX.length());
+            return bearerToken.substring(7);
         }
 
         return null;

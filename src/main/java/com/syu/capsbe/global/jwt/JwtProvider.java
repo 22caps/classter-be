@@ -1,18 +1,16 @@
 package com.syu.capsbe.global.jwt;
 
-import com.auth0.jwk.Jwk;
-import com.auth0.jwk.JwkProvider;
-import com.auth0.jwk.UrlJwkProvider;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.syu.capsbe.global.jwt.dto.JwtResponseDto;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.security.interfaces.RSAPublicKey;
 import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -27,20 +25,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtProvider {
 
-    private final String issuer;
-    private final UserDetailsService userDetailsService;
-    private final JwkProvider jwkProvider;
     private static final long TOKEN_VALID_TIME = 30 * 60 * 1000L; // 30 minutes
+    private final UserDetailsService userDetailsService;
     private final Key secretKey;
 
-    public JwtProvider(
-            @Value("${auth0.domain}") String issuer, UserDetailsService userDetailsService,
-            @Value("${JWT_KEY}") String secretKey
+    public JwtProvider(UserDetailsService userDetailsService, @Value("${JWT_KEY}") String secretKey
     ) {
         this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
-        this.issuer = issuer;
         this.userDetailsService = userDetailsService;
-        this.jwkProvider = new UrlJwkProvider(issuer);
     }
 
     public JwtResponseDto generateToken(String email, List<String> roles) {
@@ -60,40 +52,34 @@ public class JwtProvider {
         return JwtResponseDto.of(accessToken, expiresAt);
     }
 
-    public Authentication getAuthentication(String token) {
-        try {
-            DecodedJWT jwt = verifyToken(token);
-            String email = jwt.getSubject();
-
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-            return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-        } catch (Exception e) {
-            log.error("JWT 검증 실패", e);
-            return null;
-        }
+    public Authentication getAuthentication(String accessToken) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(
+                this.getUserEmailByToken(accessToken));
+        return new UsernamePasswordAuthenticationToken(userDetails, "",
+                userDetails.getAuthorities());
     }
 
-    public DecodedJWT verifyToken(String token) throws Exception {
-        DecodedJWT decodedJWT = JWT.decode(token);
-
-        Jwk jwk = jwkProvider.get(decodedJWT.getKeyId());
-        RSAPublicKey publicKey = (RSAPublicKey) jwk.getPublicKey();
-
-        com.auth0.jwt.algorithms.Algorithm algorithm = com.auth0.jwt.algorithms.Algorithm.RSA256(publicKey, null);
-        com.auth0.jwt.JWTVerifier verifier = JWT.require(algorithm)
-                .withIssuer(issuer)
-                .build();
-
-        return verifier.verify(token);
-    }
 
     public boolean validateToken(String token) {
         try {
-            verifyToken(token);
-            return true;
-        } catch (Exception e) {
-            log.error("Invalid JWT Token", e);
-            return false;
+            Jws<Claims> claims = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
+            return !claims.getBody().getExpiration().before(new Date());
+        } catch (SecurityException | MalformedJwtException e) {
+            log.info("Invalid JWT Token", e);
+        } catch (ExpiredJwtException e) {
+            log.info("Expired JWT Token", e);
+        } catch (UnsupportedJwtException e) {
+            log.info("Unsupported JWT Token", e);
+        } catch (IllegalArgumentException e) {
+            log.info("JWT claims string is empty.", e);
         }
+        return false;
+    }
+
+    public String getUserEmailByToken(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 }

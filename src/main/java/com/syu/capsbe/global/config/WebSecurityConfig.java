@@ -22,7 +22,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class WebSecurityConfig {
 
-    private final JwtProvider jwtTokenProvider;
+    private final JwtProvider jwtProvider;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -52,7 +52,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/api-docs/json", "/v3/api-docs/**", "/v2/api-docs/**", "/v1/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
                         .anyRequest().permitAll()
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider),
                         UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
