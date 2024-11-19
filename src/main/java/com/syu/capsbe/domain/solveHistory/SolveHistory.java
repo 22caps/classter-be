@@ -47,10 +47,10 @@ public class SolveHistory {
     private boolean isReviewed;
 
     @Builder
-    public SolveHistory(Member member, ProblemType problemType, LocalDateTime solveDate) {
+    public SolveHistory(Member member, ProblemType problemType) {
         this.member = member;
         this.problemType = problemType;
-        this.solveDate = solveDate;
+        this.solveDate = LocalDateTime.now();
         this.correctRate = 0;
     }
 

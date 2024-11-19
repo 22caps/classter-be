@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,10 +37,13 @@ public class PluginSolveHistory {
 
     private boolean isCorrect;
 
+    private LocalDateTime solveDate;
+
     @Builder
     public PluginSolveHistory(Member member, ProblemType problemType, boolean isCorrect) {
         this.member = member;
         this.problemType = problemType;
         this.isCorrect = isCorrect;
+        this.solveDate = LocalDateTime.now();
     }
 }

@@ -52,7 +52,7 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
         ProblemType problemType = ProblemType.valueOf(request.getProblemType());
 
         SolveHistory solveHistory = solveHistoryRepository.save(
-                new SolveHistory(member, problemType, LocalDateTime.now())
+                new SolveHistory(member, problemType)
         ); // SolveHistory 생성
 
         return SolveHistorySetUpResponseDto.of(solveHistory.getId(), request.getProblemCount());
@@ -64,8 +64,7 @@ public class SolveHistoryServiceImpl implements SolveHistoryService {
         Member member = memberService.findByEmail(request.getEmail()).orElseThrow();
 
         SolveHistory solveHistory = solveHistoryRepository.save(
-                new SolveHistory(member, ProblemType.valueOf(request.getProblemType()),
-                        LocalDateTime.now())
+                new SolveHistory(member, ProblemType.valueOf(request.getProblemType()))
         ); // SolveHistory 생성
 
         return SolveHistorySetUpResponseDto.of(solveHistory.getId(), request.getProblemCount());
